@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #faf6ef;
+    color: #1a2f5e;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-cream-200;
+  }
+  .btn-primary {
+    @apply bg-navy-900 text-cream-100 px-4 py-2 rounded-lg font-medium text-sm
+           hover:bg-navy-800 transition-colors duration-150 inline-flex items-center gap-2;
+  }
+  .btn-secondary {
+    @apply bg-cream-100 text-navy-900 px-4 py-2 rounded-lg font-medium text-sm border border-cream-300
+           hover:bg-cream-200 transition-colors duration-150 inline-flex items-center gap-2;
+  }
+  .btn-ghost {
+    @apply text-navy-700 px-4 py-2 rounded-lg font-medium text-sm
+           hover:bg-cream-100 transition-colors duration-150 inline-flex items-center gap-2;
+  }
+  .input {
+    @apply w-full border border-cream-300 rounded-lg px-3 py-2 text-sm text-navy-900
+           bg-white focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent
+           placeholder-cream-600 transition-shadow duration-150;
+  }
+  .label {
+    @apply block text-xs font-semibold text-navy-700 uppercase tracking-wide mb-1;
+  }
+  .select {
+    @apply w-full border border-cream-300 rounded-lg px-3 py-2 text-sm text-navy-900
+           bg-white focus:outline-none focus:ring-2 focus:ring-navy-500 focus:border-transparent
+           transition-shadow duration-150 cursor-pointer;
+  }
+  .table-header {
+    @apply text-left text-xs font-semibold text-navy-600 uppercase tracking-wider px-4 py-3;
+  }
+  .table-cell {
+    @apply px-4 py-3 text-sm text-navy-800;
+  }
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .badge-green {
+    @apply badge bg-emerald-100 text-emerald-800;
+  }
+  .badge-red {
+    @apply badge bg-red-100 text-red-700;
+  }
+  .badge-yellow {
+    @apply badge bg-amber-100 text-amber-800;
+  }
+  .badge-blue {
+    @apply badge bg-blue-100 text-blue-800;
+  }
+  .badge-navy {
+    @apply badge bg-navy-100 text-navy-800;
+  }
+  .page-header {
+    @apply flex items-center justify-between mb-6;
+  }
+  .page-title {
+    @apply text-2xl font-bold text-navy-900;
+  }
+  .page-subtitle {
+    @apply text-sm text-navy-500 mt-0.5;
+  }
+  .section-title {
+    @apply text-base font-semibold text-navy-900 mb-4;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #faf6ef;
+}
+::-webkit-scrollbar-thumb {
+  background: #c5d0e5;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9eb0d3;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: white;
+  }
+}

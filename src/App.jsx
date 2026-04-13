@@ -1,0 +1,28 @@
+import React from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Layout from './components/Layout.jsx'
+import Dashboard from './pages/Dashboard.jsx'
+import Employees from './pages/Employees.jsx'
+import PayrollRun from './pages/PayrollRun.jsx'
+import Payslips from './pages/Payslips.jsx'
+import LeaveManagement from './pages/LeaveManagement.jsx'
+import TaxCalculator from './pages/TaxCalculator.jsx'
+import Reports from './pages/Reports.jsx'
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/"            element={<Dashboard />} />
+          <Route path="/employees"   element={<Employees />} />
+          <Route path="/payroll-run" element={<PayrollRun />} />
+          <Route path="/payslips"    element={<Payslips />} />
+          <Route path="/leave"       element={<LeaveManagement />} />
+          <Route path="/tax-calc"    element={<TaxCalculator />} />
+          <Route path="/reports"     element={<Reports />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
+  )
+}
