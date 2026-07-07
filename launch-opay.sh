@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# NamPay launcher — macOS / Linux
-# Double-click (macOS: rename to launch-nampay.command) or run from a terminal.
+# Opay launcher — macOS / Linux
+# Double-click (macOS: rename to launch-opay.command) or run from a terminal.
 set -e
 cd "$(dirname "$0")"
 
 echo "============================================"
-echo "  NamPay — Namibian Payroll System"
+echo "  Opay — Namibian Payroll System"
 echo "============================================"
 echo
 
@@ -19,7 +19,7 @@ if [ ! -d node_modules ]; then
   npm install
 fi
 
-echo "Starting NamPay... your browser will open automatically."
+echo "Starting Opay... your browser will open automatically."
 echo "Keep this window open while using the app. Press Ctrl+C to stop."
 echo
 npm run dev -- --open

@@ -1,9 +1,9 @@
 @echo off
-title NamPay - Namibian Payroll System
+title Opay - Namibian Payroll System
 cd /d "%~dp0"
 
 echo ============================================
-echo   NamPay - Namibian Payroll System
+echo   Opay - Namibian Payroll System
 echo ============================================
 echo.
 
@@ -19,7 +19,7 @@ if not exist node_modules (
     call npm install
 )
 
-echo Starting NamPay... your browser will open automatically.
+echo Starting Opay... your browser will open automatically.
 echo Keep this window open while using the app. Close it to stop.
 echo.
 call npm run dev -- --open

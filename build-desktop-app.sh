@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build NamPay desktop installers using Docker (no Node.js needed on the host).
+# Build Opay desktop installers using Docker (no Node.js needed on the host).
 #
 #   ./build-desktop-app.sh            # Linux installers (AppImage + .deb)
 #   ./build-desktop-app.sh windows    # Windows installer (.exe, built via Wine)
@@ -21,7 +21,7 @@ run_build() {
   local image="$1" cmd="$2"
   docker run --rm \
     -v "$PWD":/project \
-    -v nampay-node-modules:/project/node_modules \
+    -v opay-node-modules:/project/node_modules \
     -w /project \
     "$image" \
     /bin/bash -c "npm install && $cmd"
@@ -53,6 +53,6 @@ echo "Done! Installers are in ./release/"
 ls -lh release/ 2>/dev/null | grep -Ev "^total|/$" || true
 echo
 echo "To install on this Linux machine:"
-echo "  sudo apt install ./release/namibia-payroll_1.0.0_amd64.deb   # adds NamPay to your app menu"
+echo "  sudo apt install ./release/namibia-payroll_1.0.0_amd64.deb   # adds Opay to your app menu"
 echo "  # or run the AppImage directly:"
-echo "  chmod +x release/NamPay-1.0.0.AppImage && ./release/NamPay-1.0.0.AppImage"
+echo "  chmod +x release/Opay-1.0.0.AppImage && ./release/Opay-1.0.0.AppImage"
