@@ -69,11 +69,31 @@ npm run dev      # development server
 npm run build    # production build
 ```
 
-### Desktop Shortcut
+## Desktop App (Recommended)
 
-Launcher files are included so you can start NamPay with a double-click:
+NamPay ships as a proper installable desktop application (Electron). Build the installer once, then install it like any other program — it gets its own icon, Start Menu entry, and desktop shortcut automatically.
 
-- **Windows** — right-click `Launch NamPay.bat` → *Send to* → *Desktop (create shortcut)*. Double-clicking the shortcut installs dependencies on first run, starts the app, and opens your browser.
+```bash
+npm install          # one-time setup
+npm run dist:win     # Windows → release/NamPay Setup 1.0.0.exe
+npm run dist:mac     # macOS   → release/NamPay-1.0.0.dmg
+npm run dist:linux   # Linux   → release/NamPay-1.0.0.AppImage + .deb
+```
+
+Run the installer from the `release/` folder. On Windows the setup wizard creates a **desktop shortcut** and Start Menu entry for you.
+
+For development you can also run the desktop shell against the live dev server:
+
+```bash
+npm run dev          # terminal 1 — Vite dev server
+npm run app          # terminal 2 — Electron window
+```
+
+### Quick-Launch Scripts (no install)
+
+If you prefer not to install anything, double-click launchers are also included:
+
+- **Windows** — right-click `Launch NamPay.bat` → *Send to* → *Desktop (create shortcut)*. Double-clicking installs dependencies on first run, starts the app, and opens your browser.
 - **macOS** — duplicate `launch-nampay.sh` as `launch-nampay.command` (`cp launch-nampay.sh launch-nampay.command && chmod +x launch-nampay.command`), then drag it to the Dock or make an alias on the Desktop.
 - **Linux** — copy `nampay.desktop` to `~/Desktop/` (or `~/.local/share/applications/`), edit the `Exec=` path to your clone location, and mark it executable/trusted.
 

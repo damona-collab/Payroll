@@ -1,5 +1,6 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+// HashRouter so the app works from file:// inside the packaged desktop app
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/Layout.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import Employees from './pages/Employees.jsx'
@@ -12,7 +13,7 @@ import Configuration from './pages/Configuration.jsx'
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Layout>
         <Routes>
           <Route path="/"            element={<Dashboard />} />
@@ -25,6 +26,6 @@ export default function App() {
           <Route path="/config"      element={<Configuration />} />
         </Routes>
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
