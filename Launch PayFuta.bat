@@ -1,9 +1,9 @@
 @echo off
-title Opay - Namibian Payroll System
+title PayFuta - Namibian Payroll System
 cd /d "%~dp0"
 
 echo ============================================
-echo   Opay - Namibian Payroll System
+echo   PayFuta - Namibian Payroll System
 echo ============================================
 echo.
 
@@ -19,7 +19,7 @@ if not exist node_modules (
     call npm install
 )
 
-echo Starting Opay... your browser will open automatically.
+echo Starting PayFuta... your browser will open automatically.
 echo Keep this window open while using the app. Close it to stop.
 echo.
 call npm run dev -- --open

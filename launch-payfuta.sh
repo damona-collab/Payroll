@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Opay launcher — macOS / Linux
-# Double-click (macOS: rename to launch-opay.command) or run from a terminal.
+# PayFuta launcher — macOS / Linux
+# Double-click (macOS: rename to launch-payfuta.command) or run from a terminal.
 set -e
 cd "$(dirname "$0")"
 
 echo "============================================"
-echo "  Opay — Namibian Payroll System"
+echo "  PayFuta — Namibian Payroll System"
 echo "============================================"
 echo
 
@@ -19,7 +19,7 @@ if [ ! -d node_modules ]; then
   npm install
 fi
 
-echo "Starting Opay... your browser will open automatically."
+echo "Starting PayFuta... your browser will open automatically."
 echo "Keep this window open while using the app. Press Ctrl+C to stop."
 echo
 npm run dev -- --open

@@ -1,6 +1,6 @@
 {
   "name": "namibia-payroll",
-  "productName": "Opay",
+  "productName": "PayFuta",
   "description": "Namibian Payroll System — Labour Act 11 of 2007 and NamRA tax table compliant",
   "author": "Katelago",
   "version": "1.0.0",
@@ -36,8 +36,8 @@
     "vite": "^5.0.8"
   },
   "build": {
-    "appId": "com.katelago.opay",
-    "productName": "Opay",
+    "appId": "com.katelago.payfuta",
+    "productName": "PayFuta",
     "directories": {
       "buildResources": "build",
       "output": "release"
@@ -63,7 +63,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Opay"
+      "shortcutName": "PayFuta"
     },
     "mac": {
       "target": [

@@ -10,7 +10,7 @@ function createWindow() {
     minWidth: 1024,
     minHeight: 640,
     backgroundColor: '#0f2557',
-    title: 'Opay — Namibian Payroll System',
+    title: 'PayFuta — Namibian Payroll System',
     icon: path.join(__dirname, '..', 'build', 'icon.png'),
     webPreferences: {
       contextIsolation: true,

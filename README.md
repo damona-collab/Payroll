@@ -1,4 +1,4 @@
-# Opay — Namibian Payroll System
+# PayFuta — Namibian Payroll System
 
 A clean, modern payroll application built for Namibian businesses, fully aligned with the **Labour Act 11 of 2007** and the **NamRA tax tables (2024/2025)**. Styled with a navy blue and cream colour scheme inspired by PaySpace.
 
@@ -71,7 +71,7 @@ npm run build    # production build
 
 ## Desktop App (Recommended)
 
-Opay ships as a proper installable desktop application (Electron). Build the installer once, then install it like any other program — it gets its own icon, Start Menu entry, and desktop shortcut automatically.
+PayFuta ships as a proper installable desktop application (Electron). Build the installer once, then install it like any other program — it gets its own icon, Start Menu entry, and desktop shortcut automatically.
 
 **With Docker (recommended on Linux — no Node.js needed):**
 
@@ -81,15 +81,15 @@ Opay ships as a proper installable desktop application (Electron). Build the ins
 sudo apt install ./release/namibia-payroll_1.0.0_amd64.deb
 ```
 
-Installing the `.deb` adds **Opay to your application menu** with its icon — pin it to your dock/desktop from there.
+Installing the `.deb` adds **PayFuta to your application menu** with its icon — pin it to your dock/desktop from there.
 
 **With Node.js directly:**
 
 ```bash
 npm install          # one-time setup
-npm run dist:win     # Windows → release/Opay Setup 1.0.0.exe
-npm run dist:mac     # macOS   → release/Opay-1.0.0.dmg
-npm run dist:linux   # Linux   → release/Opay-1.0.0.AppImage + .deb
+npm run dist:win     # Windows → release/PayFuta Setup 1.0.0.exe
+npm run dist:mac     # macOS   → release/PayFuta-1.0.0.dmg
+npm run dist:linux   # Linux   → release/PayFuta-1.0.0.AppImage + .deb
 ```
 
 Run the installer from the `release/` folder. On Windows the setup wizard creates a **desktop shortcut** and Start Menu entry for you.
@@ -105,9 +105,9 @@ npm run app          # terminal 2 — Electron window
 
 If you prefer not to install anything, double-click launchers are also included:
 
-- **Windows** — right-click `Launch Opay.bat` → *Send to* → *Desktop (create shortcut)*. Double-clicking installs dependencies on first run, starts the app, and opens your browser.
-- **macOS** — duplicate `launch-opay.sh` as `launch-opay.command` (`cp launch-opay.sh launch-opay.command && chmod +x launch-opay.command`), then drag it to the Dock or make an alias on the Desktop.
-- **Linux** — copy `opay.desktop` to `~/Desktop/` (or `~/.local/share/applications/`), edit the `Exec=` path to your clone location, and mark it executable/trusted.
+- **Windows** — right-click `Launch PayFuta.bat` → *Send to* → *Desktop (create shortcut)*. Double-clicking installs dependencies on first run, starts the app, and opens your browser.
+- **macOS** — duplicate `launch-payfuta.sh` as `launch-payfuta.command` (`cp launch-payfuta.sh launch-payfuta.command && chmod +x launch-payfuta.command`), then drag it to the Dock or make an alias on the Desktop.
+- **Linux** — copy `payfuta.desktop` to `~/Desktop/` (or `~/.local/share/applications/`), edit the `Exec=` path to your clone location, and mark it executable/trusted.
 
 ## Tech Stack
 
