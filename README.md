@@ -69,6 +69,14 @@ npm run dev      # development server
 npm run build    # production build
 ```
 
+### Desktop Shortcut
+
+Launcher files are included so you can start NamPay with a double-click:
+
+- **Windows** — right-click `Launch NamPay.bat` → *Send to* → *Desktop (create shortcut)*. Double-clicking the shortcut installs dependencies on first run, starts the app, and opens your browser.
+- **macOS** — duplicate `launch-nampay.sh` as `launch-nampay.command` (`cp launch-nampay.sh launch-nampay.command && chmod +x launch-nampay.command`), then drag it to the Dock or make an alias on the Desktop.
+- **Linux** — copy `nampay.desktop` to `~/Desktop/` (or `~/.local/share/applications/`), edit the `Exec=` path to your clone location, and mark it executable/trusted.
+
 ## Tech Stack
 
 - **React 18** + **Vite 5**
