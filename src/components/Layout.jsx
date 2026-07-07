@@ -4,6 +4,7 @@ import {
   LayoutDashboard, Users, Calculator, FileText, Calendar,
   BarChart3, ChevronLeft, ChevronRight, Bell, Search,
   Settings, LogOut, Building2, Menu, X, ChevronDown,
+  Layers, GitCompare,
 } from 'lucide-react'
 import { COMPANY_INFO } from '../data/employees.js'
 
@@ -12,6 +13,8 @@ const navItems = [
   { to: '/employees',    icon: Users,           label: 'Employees' },
   { to: '/payroll-run',  icon: Calculator,      label: 'Payroll Run' },
   { to: '/payslips',     icon: FileText,        label: 'Payslips' },
+  { to: '/compare',      icon: GitCompare,      label: 'Compare Payslips' },
+  { to: '/tax-drilldown', icon: Layers,         label: 'Tax Drilldown' },
   { to: '/leave',        icon: Calendar,        label: 'Leave Management' },
   { to: '/tax-calc',     icon: Calculator,      label: 'Tax Calculator' },
   { to: '/reports',      icon: BarChart3,       label: 'Reports' },

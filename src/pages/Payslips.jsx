@@ -143,6 +143,26 @@ function PayslipDocument({ employee, period }) {
           ))}
         </div>
 
+        {/* Income streams (PaySpace-style perspectives) */}
+        {p.incomeStreams && (
+          <div className="mt-4">
+            <div className="text-xs font-bold text-navy-600 uppercase tracking-wider mb-2">
+              Income Perspectives
+            </div>
+            <div className="bg-cream-100 rounded-lg px-4 py-2 divide-y divide-cream-200">
+              {Object.values(p.incomeStreams).map(s => (
+                <div key={s.code} className="flex justify-between items-center py-1.5 text-sm">
+                  <span className="text-navy-600">
+                    {s.label}
+                    <span className="ml-2 text-[10px] font-mono text-navy-400 bg-white px-1.5 py-0.5 rounded">{s.code}</span>
+                  </span>
+                  <span className="text-navy-900 font-medium tabular-nums">{formatNAD(s.value)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Fringe benefits (notional — taxed, not paid in cash) */}
         {p.fringeBenefits > 0 && (
           <div className="mt-4">

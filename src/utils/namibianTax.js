@@ -5,6 +5,9 @@
  * Tax Year: 2024/2025
  */
 
+// Round to 2 decimals
+const round2 = n => Math.round((n + Number.EPSILON) * 100) / 100
+
 // Annual tax brackets (N$)
 export const TAX_BRACKETS = [
   { min: 0,         max: 50000,    base: 0,       rate: 0.00, label: 'N$0 – N$50,000' },
@@ -158,6 +161,23 @@ export function calculatePayroll({
   const totalEmployerCost = grossSalary + ssc.employer + vetLevy + wc.assessment
     + pensionEmployer + medicalAidEmployer
 
+  // PaySpace-style income streams ("income perspectives"): every payslip resolves
+  // earnings into several income bases, each identified by a tax code. PAYE is
+  // levied on True Taxable Income (Taxable Income less Total Allowable deductions).
+  const grossIncome = grossSalary + fringeBenefits
+  const totalAllowable = pensionDeductible
+  const trueTaxableIncome = Math.max(0, grossIncome - totalAllowable)
+  const incomeStreams = {
+    GROSS:    { code: 'GROSS',   label: 'Gross Income',                 value: round2(grossIncome) },
+    SOCI:     { code: 'SOCI',    label: 'Social Security Income',       value: round2(grossSalary) },
+    TAXAB:    { code: 'TAXAB',   label: 'Taxable Income',               value: round2(grossIncome) },
+    ALLOW:    { code: 'ALLOW',   label: 'Total Allowable',              value: round2(totalAllowable) },
+    TTAXAB:   { code: 'TTAXAB',  label: 'True Taxable Income',          value: round2(trueTaxableIncome) },
+    WCFI:     { code: 'WCFI',    label: "Workmen's Compensation Income (capped)",   value: round2(Math.min(grossSalary, WC_EARNINGS_CEILING_MONTHLY)) },
+    WCFIUNCAP:{ code: 'WCFIUNCAP', label: "Workmen's Compensation Income (uncapped)", value: round2(grossSalary) },
+    VETI:     { code: 'VETI',    label: 'VET Levy Income',              value: round2(grossSalary) },
+  }
+
   return {
     grossSalary: Math.round(grossSalary * 100) / 100,
     basicSalary: Math.round(basicSalary * 100) / 100,
@@ -166,8 +186,12 @@ export function calculatePayroll({
     overtimePay: Math.round(overtimePay * 100) / 100,
     fringeBenefits: Math.round(fringeBenefits * 100) / 100,
     taxableIncome: Math.round(taxableIncome * 100) / 100,
+    trueTaxableIncome: round2(trueTaxableIncome),
+    totalAllowable: round2(totalAllowable),
     sscIncome: Math.round(Math.min(basicSalary, SSC_CEILING) * 100) / 100,
     pensionDeductible: Math.round(pensionDeductible * 100) / 100,
+    // PaySpace income-stream breakdown
+    incomeStreams,
     // Deductions
     paye: Math.round(paye * 100) / 100,
     sscEmployee: ssc.employee,
@@ -188,6 +212,78 @@ export function calculatePayroll({
     totalEmployerCost: Math.round(totalEmployerCost * 100) / 100,
     // Effective rate
     effectiveTaxRate: grossSalary > 0 ? Math.round((paye / grossSalary) * 10000) / 100 : 0,
+  }
+}
+
+/**
+ * Build a PaySpace-style Employee Tax Drilldown from an array of monthly
+ * payslip results. Groups every value into Earning / Gross / Deduction /
+ * Company Contribution / Information totals, each with a YTD figure and one
+ * column per month. Rows carry the PaySpace tax code.
+ *
+ * @param {Array<{period: string, calc: object, inputs: object}>} months
+ *        chronological list (earliest first) of monthly payroll results
+ * @returns {{ periods: string[], groups: Array }}
+ */
+export function buildTaxDrilldown(months) {
+  const periods = months.map(m => m.period)
+  const sum = fn => months.reduce((s, m) => s + (fn(m) || 0), 0)
+  const series = fn => months.map(fn)
+
+  const group = (label, code, rows) => ({
+    label,
+    code,
+    ytd: round2(rows.reduce((s, r) => s + r.ytd, 0)),
+    monthly: periods.map((_, i) => round2(rows.reduce((s, r) => s + r.monthly[i], 0))),
+    rows,
+  })
+  const row = (label, code, fn) => ({
+    label, code,
+    ytd: round2(sum(fn)),
+    monthly: series(fn).map(round2),
+  })
+
+  const earningRows = [
+    row('Salaries / Wages', 'SAL', m => m.inputs.basicSalary),
+    row('Allowances', 'ALLOW', m => m.inputs.allowances + m.inputs.housingAllowance),
+    row('Overtime', 'OTHEREARN', m => m.inputs.overtimePay || 0),
+    row('Fringe Benefits', 'FB', m => m.inputs.fringeBenefits || 0),
+  ].filter(r => r.ytd !== 0)
+
+  const deductionRows = [
+    row('Pay As You Earn (PAYE)', 'Tax', m => m.calc.paye),
+    row('Social Security Employee', 'SOCEE', m => m.calc.sscEmployee),
+    row('Pension Fund Employee', 'PENFUND', m => m.calc.pensionEmployee),
+    row('Medical Aid Employee', 'MEDEE', m => m.calc.medicalAid),
+    row('Other Deductions', '9999', m => m.calc.otherDeductions),
+  ].filter(r => r.ytd !== 0)
+
+  const contributionRows = [
+    row('Pension Fund Employer', 'PENER', m => m.calc.pensionEmployer),
+    row('Medical Aid Employer', 'MEDER', m => m.calc.medicalAidEmployer),
+    row('Social Security Employer', 'SOCER', m => m.calc.sscEmployer),
+    row("Workmen's Compensation", 'WCA', m => m.calc.wcAssessment),
+    row('VET Levy', 'VETL', m => m.calc.vetLevy),
+  ].filter(r => r.ytd !== 0)
+
+  const informationRows = [
+    row('Gross Income', 'GROSS', m => m.calc.incomeStreams.GROSS.value),
+    row('Total Allowable', 'ALLOW', m => m.calc.totalAllowable),
+    row('True Taxable Income', 'TTAXAB', m => m.calc.trueTaxableIncome),
+    row('Social Security Income', 'SOCI', m => m.calc.incomeStreams.SOCI.value),
+    row("Workmen's Comp Income (capped)", 'WCFI', m => m.calc.incomeStreams.WCFI.value),
+    row('VET Levy Income', 'VETI', m => m.calc.incomeStreams.VETI.value),
+  ].filter(r => r.ytd !== 0)
+
+  return {
+    periods,
+    groups: [
+      group('Earning Total', 'EARN', earningRows),
+      group('Gross Total', 'GROSS', [row('Taxable Income', 'TAXAB', m => m.calc.incomeStreams.TAXAB.value)]),
+      group('Deduction Total', 'DEDUCT', deductionRows),
+      group('Company Contribution Total', 'CC', contributionRows),
+      group('Information Total', 'INFO', informationRows),
+    ],
   }
 }
 

@@ -365,6 +365,46 @@ export const employees = rawEmployees.map(emp => {
 
 export const departments = [...new Set(rawEmployees.map(e => e.department))].sort()
 
+/**
+ * Tax-year periods (Mar–Feb, Namibian tax year) up to the current run.
+ * March is the first period of the tax year.
+ */
+export const TAX_YEAR_PERIODS = [
+  'March 2025', 'April 2025', 'May 2025', 'June 2025', 'July 2025',
+  'August 2025', 'September 2025', 'October 2025', 'November 2025',
+  'December 2025', 'January 2026', 'February 2026',
+]
+
+/**
+ * Build a chronological list of monthly payslip results for an employee,
+ * up to and including `throughPeriod`. Deterministic (no randomness), with a
+ * mild variance so overtime/bonus months differ — enough to make the tax
+ * drilldown and compare-payslips views meaningful.
+ */
+export function generateMonthlyHistory(emp, throughPeriod = 'February 2026') {
+  const end = TAX_YEAR_PERIODS.indexOf(throughPeriod)
+  const periods = TAX_YEAR_PERIODS.slice(0, end === -1 ? TAX_YEAR_PERIODS.length : end + 1)
+  return periods.map((period, i) => {
+    // Deterministic per-month overtime for overtime-eligible staff (Jun/Nov spikes)
+    const overtimePay = emp.overtimeEligible && (i === 3 || i === 8)
+      ? Math.round(emp.basicSalary * 0.08)
+      : 0
+    const inputs = {
+      basicSalary: emp.basicSalary,
+      allowances: emp.allowances,
+      housingAllowance: emp.housingAllowance,
+      overtimePay,
+      fringeBenefits: emp.fringeBenefits,
+      pensionEmployee: emp.pensionEmployee,
+      pensionEmployer: emp.pensionEmployer,
+      medicalAid: emp.medicalAid,
+      medicalAidEmployer: emp.medicalAidEmployer,
+      otherDeductions: emp.otherDeductions,
+    }
+    return { period, inputs, calc: calculatePayroll(inputs) }
+  })
+}
+
 export const COMPANY_INFO = {
   name: 'Katelago',
   registrationNumber: 'CC/2015/12345',
