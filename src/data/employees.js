@@ -366,7 +366,7 @@ export const employees = rawEmployees.map(emp => {
 export const departments = [...new Set(rawEmployees.map(e => e.department))].sort()
 
 export const COMPANY_INFO = {
-  name: 'Katelago (Pty) Ltd',
+  name: 'Katelago',
   registrationNumber: 'CC/2015/12345',
   vatNumber: '0987654321',
   taxNumber: 'TN-00001234',
