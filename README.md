@@ -73,6 +73,18 @@ npm run build    # production build
 
 NamPay ships as a proper installable desktop application (Electron). Build the installer once, then install it like any other program — it gets its own icon, Start Menu entry, and desktop shortcut automatically.
 
+**With Docker (recommended on Linux — no Node.js needed):**
+
+```bash
+./build-desktop-app.sh            # Linux installers (AppImage + .deb)
+./build-desktop-app.sh windows    # Windows .exe installer (built via Wine)
+sudo apt install ./release/namibia-payroll_1.0.0_amd64.deb
+```
+
+Installing the `.deb` adds **NamPay to your application menu** with its icon — pin it to your dock/desktop from there.
+
+**With Node.js directly:**
+
 ```bash
 npm install          # one-time setup
 npm run dist:win     # Windows → release/NamPay Setup 1.0.0.exe
