@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { Calculator, Info, TrendingUp, RefreshCw } from 'lucide-react'
 import {
   TAX_BRACKETS, calculateMonthlyPAYE, calculateSSC,
-  calculatePayroll, formatNAD, ANNUAL_REBATE,
+  calculatePayroll, formatNAD,
 } from '../utils/namibianTax.js'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -205,9 +205,9 @@ export default function TaxCalculator() {
         <div className="flex items-center gap-2 mb-4">
           <Info size={16} className="text-navy-600" />
           <div className="text-base font-semibold text-navy-900">
-            PAYE Tax Brackets — Namibia 2024/2025
+            PAYE Tax Brackets — Namibia 2026/2027
           </div>
-          <span className="ml-auto text-xs text-navy-400">Annual rebate: {formatNAD(ANNUAL_REBATE)}</span>
+          <span className="ml-auto text-xs text-navy-400">Tax-free threshold: {formatNAD(100000, 0)}</span>
         </div>
         <div className="space-y-1.5">
           {TAX_BRACKETS.map(bracket => (

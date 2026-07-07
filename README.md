@@ -1,6 +1,6 @@
 # PayFuta — Namibian Payroll System
 
-A clean, modern payroll application built for Namibian businesses, fully aligned with the **Labour Act 11 of 2007** and the **NamRA tax tables (2024/2025)**. Styled with a navy blue and cream colour scheme inspired by PaySpace.
+A clean, modern payroll application built for Namibian businesses, fully aligned with the **Labour Act 11 of 2007** and the **NamRA tax tables (2026/2027)**. Styled with a navy blue and cream colour scheme inspired by PaySpace.
 
 ![Stack](https://img.shields.io/badge/React-18-blue) ![Build](https://img.shields.io/badge/Vite-5-purple) ![Styling](https://img.shields.io/badge/Tailwind_CSS-3-teal)
 
@@ -31,19 +31,19 @@ The system implements the Katelago Payroll Configuration requirements:
 
 ## Statutory Compliance
 
-### PAYE — Income Tax Act (Act 24 of 1981, as amended) · Tax Year 2024/2025
+### PAYE — Income Tax Act (Act 24 of 1981, as amended) · Tax Year 2026/2027
 
 | Annual Taxable Income | Rate |
 |----------------------|------|
-| N$0 – N$50,000 | 0% |
-| N$50,001 – N$100,000 | 18% |
-| N$100,001 – N$300,000 | N$9,000 + 25% |
-| N$300,001 – N$500,000 | N$59,000 + 28% |
-| N$500,001 – N$800,000 | N$115,000 + 30% |
-| N$800,001 – N$1,500,000 | N$205,000 + 32% |
-| N$1,500,001+ | N$429,000 + 37% |
+| N$0 – N$100,000 | 0% |
+| N$100,001 – N$150,000 | 18% of amount over N$100,000 |
+| N$150,001 – N$350,000 | N$9,000 + 25% of amount over N$150,000 |
+| N$350,001 – N$550,000 | N$59,000 + 28% of amount over N$350,000 |
+| N$550,001 – N$850,000 | N$115,000 + 30% of amount over N$550,000 |
+| N$850,001 – N$1,550,000 | N$205,000 + 32% of amount over N$850,000 |
+| N$1,550,001+ | N$429,000 + 37% of amount over N$1,550,000 |
 
-Annual rebate: **N$17,640**
+The tax-free threshold was raised to **N$100,000**; no separate rebate applies. All amounts are in Namibian Dollar (N$ / NAD).
 
 ### Social Security (Social Security Act 34 of 1994)
 - 0.9% employee + 0.9% employer, each capped at **N$81/month** (earnings ceiling N$9,000/month)

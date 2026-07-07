@@ -9,7 +9,7 @@ import {
 } from '../data/payComponents.js'
 import {
   SSC_RATE, SSC_MAX_MONTHLY, SSC_CEILING, VET_RATE,
-  WC_RATE, WC_EARNINGS_CEILING_ANNUAL, ANNUAL_REBATE, formatNAD,
+  WC_RATE, WC_EARNINGS_CEILING_ANNUAL, formatNAD,
 } from '../utils/namibianTax.js'
 
 function Flag({ value }) {
@@ -215,11 +215,11 @@ export default function Configuration() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             {
-              title: 'PAYE — Income Tax Act 24 of 1981',
+              title: 'PAYE — Income Tax Act 24 of 1981 (2026/2027)',
               rows: [
-                ['Tax-free threshold', 'N$50,000 p.a.'],
+                ['Tax-free threshold', 'N$100,000 p.a.'],
                 ['Marginal rates', '18% – 37% (7 brackets)'],
-                ['Annual rebate', formatNAD(ANNUAL_REBATE)],
+                ['Top bracket', 'N$1,550,001+ (37%)'],
                 ['Remittance deadline', '20th of following month (NamRA)'],
               ],
             },

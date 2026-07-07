@@ -78,7 +78,7 @@ export default function Reports() {
       <div className="card p-4 flex items-center justify-between">
         <div>
           <div className="text-base font-semibold text-navy-900">Payroll Reports</div>
-          <div className="text-xs text-navy-400">Tax Year 2024/2025 &bull; {COMPANY_INFO.name}</div>
+          <div className="text-xs text-navy-400">Tax Year 2026/2027 &bull; {COMPANY_INFO.name}</div>
         </div>
         <div className="flex gap-2 items-center">
           <select

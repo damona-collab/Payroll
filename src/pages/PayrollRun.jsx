@@ -439,7 +439,7 @@ export default function PayrollRun() {
                 <ul className="mt-2 space-y-1 text-sm text-amber-700">
                   <li className="flex items-center gap-2"><Check size={12} /> Pre-payroll validation passed (SSC + tax reference present)</li>
                   <li className="flex items-center gap-2"><Check size={12} /> All employee banking details verified</li>
-                  <li className="flex items-center gap-2"><Check size={12} /> PAYE calculations align with NamRA tax tables 2024/2025</li>
+                  <li className="flex items-center gap-2"><Check size={12} /> PAYE calculations align with NamRA tax tables 2026/2027</li>
                   <li className="flex items-center gap-2"><Check size={12} /> SSC contributions within statutory cap (N$81/month)</li>
                   <li className="flex items-center gap-2"><Check size={12} /> Net-pay protection applied — no negative net pay</li>
                   <li className="flex items-center gap-2"><Check size={12} /> Payroll approved by Finance Manager — period will be locked on processing</li>

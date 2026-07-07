@@ -2,26 +2,29 @@
  * Namibian PAYE Tax Calculation Engine
  * Based on Namibia Revenue Agency (NamRA) tax tables and
  * the Income Tax Act (Act 24 of 1981, as amended)
- * Tax Year: 2024/2025
+ * Tax Year: 2026/2027 (tax-free threshold raised to N$100,000)
  */
 
 // Round to 2 decimals
 const round2 = n => Math.round((n + Number.EPSILON) * 100) / 100
 
-// Annual tax brackets (N$)
+// Annual tax brackets (N$) — Namibia 2026/2027 (NamRA / Income Tax Amendment)
+// The tax-free threshold was raised to N$100,000; the "base" amounts already
+// represent tax payable, so no separate rebate is applied.
 export const TAX_BRACKETS = [
-  { min: 0,         max: 50000,    base: 0,       rate: 0.00, label: 'N$0 – N$50,000' },
-  { min: 50001,     max: 100000,   base: 0,       rate: 0.18, label: 'N$50,001 – N$100,000' },
-  { min: 100001,    max: 300000,   base: 9000,    rate: 0.25, label: 'N$100,001 – N$300,000' },
-  { min: 300001,    max: 500000,   base: 59000,   rate: 0.28, label: 'N$300,001 – N$500,000' },
-  { min: 500001,    max: 800000,   base: 115000,  rate: 0.30, label: 'N$500,001 – N$800,000' },
-  { min: 800001,    max: 1500000,  base: 205000,  rate: 0.32, label: 'N$800,001 – N$1,500,000' },
-  { min: 1500001,   max: Infinity, base: 429000,  rate: 0.37, label: 'N$1,500,001+' },
+  { min: 0,         max: 100000,   base: 0,       rate: 0.00, label: 'N$0 – N$100,000' },
+  { min: 100001,    max: 150000,   base: 0,       rate: 0.18, label: 'N$100,001 – N$150,000' },
+  { min: 150001,    max: 350000,   base: 9000,    rate: 0.25, label: 'N$150,001 – N$350,000' },
+  { min: 350001,    max: 550000,   base: 59000,   rate: 0.28, label: 'N$350,001 – N$550,000' },
+  { min: 550001,    max: 850000,   base: 115000,  rate: 0.30, label: 'N$550,001 – N$850,000' },
+  { min: 850001,    max: 1550000,  base: 205000,  rate: 0.32, label: 'N$850,001 – N$1,550,000' },
+  { min: 1550001,   max: Infinity, base: 429000,  rate: 0.37, label: 'N$1,550,001+' },
 ]
 
-// Annual tax rebate
-export const ANNUAL_REBATE = 17640
-export const MONTHLY_REBATE = ANNUAL_REBATE / 12
+// No separate rebate under the 2026/2027 table — relief is built into the
+// N$100,000 tax-free threshold. Kept at 0 so downstream code stays uniform.
+export const ANNUAL_REBATE = 0
+export const MONTHLY_REBATE = 0
 
 // Social Security Commission (SSC) - Maternity, Sick Leave & Death Benefits Fund
 export const SSC_RATE = 0.009         // 0.9% each (employee & employer)
@@ -41,14 +44,17 @@ export const WC_EARNINGS_CEILING_ANNUAL = 81300
 export const WC_EARNINGS_CEILING_MONTHLY = Math.round((WC_EARNINGS_CEILING_ANNUAL / 12) * 100) / 100
 
 /**
- * Calculate annual PAYE tax on annual income (before rebate)
+ * Calculate annual PAYE tax on annual income.
+ * Excess is measured over the bracket threshold (bracket.min - 1), i.e. the
+ * "amount exceeding N$X" wording in the NamRA table, giving exact figures.
  */
 export function calculateAnnualTax(annualIncome) {
   if (annualIncome <= 0) return 0
   const taxable = Math.max(0, annualIncome)
   for (const bracket of TAX_BRACKETS) {
     if (taxable <= bracket.max) {
-      const excess = Math.max(0, taxable - bracket.min)
+      const threshold = bracket.min === 0 ? 0 : bracket.min - 1
+      const excess = Math.max(0, taxable - threshold)
       return bracket.base + excess * bracket.rate
     }
   }

@@ -153,7 +153,7 @@ export default function Layout({ children }) {
             <h1 className="text-lg font-semibold text-navy-900 leading-tight">
               {currentPage?.label ?? 'PayFuta'}
             </h1>
-            <p className="text-xs text-navy-400">Tax Year 2024/2025 &bull; {COMPANY_INFO.name}</p>
+            <p className="text-xs text-navy-400">Tax Year 2026/2027 &bull; {COMPANY_INFO.name}</p>
           </div>
 
           {/* Search */}
