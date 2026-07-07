@@ -14,7 +14,20 @@ A clean, modern payroll application built for Namibian businesses, fully aligned
 | **Payslips** | Professional printable payslips with earnings, deductions, tax details, and leave balances |
 | **Leave Management** | Application workflow (apply / approve / decline), balance tracking, and a built-in Labour Act reference guide |
 | **Tax Calculator** | Interactive PAYE calculator with live bracket visualisation, SSC, VET levy, and annual projections |
-| **Reports** | Trend analysis, department payroll analysis, and statutory report generation (NamRA PAYE return, SSC, VET levy, payroll register) |
+| **Reports** | Trend analysis, department payroll analysis, monthly reports (payroll register, bank listing, PAYE, SSC, pension/medical schedules, cost-centre costing) and annual reports (ITAS tax certificates, PAYE reconciliation, WC declaration, leave liability, audit pack) |
+| **Configuration** | Pay component architecture with PAYE/SSC/WC/Pension inclusion flags per component, deduction priority rules, employer contributions, fringe benefit catalog, statutory rates, and the Namibian public holiday calendar |
+
+## Configuration-Driven Design
+
+The system implements the Katelago Payroll Configuration requirements:
+
+- **Employee master data** — mandatory statutory fields (employee number, legal name, ID, SSC number, tax reference, citizenship, employment category, grade, cost centre, duty station, reporting manager) plus payroll control flags (pay frequency, working days, overtime/public-holiday/leave-accrual eligibility)
+- **Pre-payroll validation** — employees with missing SSC or tax reference numbers are automatically excluded from the payroll run
+- **Component flags** — every earning, allowance, and fringe benefit carries PAYE / SSC / WC / Pension inclusion flags, allocation type, and package indicator
+- **Deduction priority & net-pay protection** — statutory deductions first, then contractual, then voluntary; voluntary deductions are automatically reduced or skipped if they would result in negative net pay
+- **Fringe benefits** — notional values are added to taxable income for PAYE without affecting cash pay, and reported separately on the payslip
+- **Loan balance tracking** — staff loans and electronics loans carry outstanding balances and monthly recovery amounts
+- **Period locking** — processed payroll periods are locked with an audit trail
 
 ## Statutory Compliance
 
@@ -36,7 +49,8 @@ Annual rebate: **N$17,640**
 - 0.9% employee + 0.9% employer, each capped at **N$81/month** (earnings ceiling N$9,000/month)
 
 ### Other
-- **VET Levy**: 1% of gross payroll (employer)
+- **VET Levy**: 1% of gross payroll (employers with payroll > N$1m p.a.)
+- **Workmen's Compensation**: employer assessment on earnings up to N$81,300 p.a. (Employees' Compensation Act 30 of 1941)
 - **Pension**: tax-deductible up to 27.5% of income, max N$150,000 p.a.
 
 ### Labour Act 11 of 2007

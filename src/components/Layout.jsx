@@ -15,6 +15,7 @@ const navItems = [
   { to: '/leave',        icon: Calendar,        label: 'Leave Management' },
   { to: '/tax-calc',     icon: Calculator,      label: 'Tax Calculator' },
   { to: '/reports',      icon: BarChart3,       label: 'Reports' },
+  { to: '/config',       icon: Settings,        label: 'Configuration' },
 ]
 
 function SidebarLink({ item, collapsed }) {

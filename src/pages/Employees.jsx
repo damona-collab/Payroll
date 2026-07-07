@@ -60,16 +60,22 @@ function EmployeeModal({ employee, onClose }) {
               { label: 'Employee ID', value: employee.id },
               { label: 'ID Number', value: employee.idNumber },
               { label: 'Tax Number', value: employee.taxNumber },
+              { label: 'SSC Number', value: employee.sscNumber || 'Missing', missing: !employee.sscNumber },
+              { label: 'Citizenship', value: employee.citizenship },
               { label: 'Department', value: employee.department },
+              { label: 'Grade', value: employee.grade },
+              { label: 'Cost Centre', value: employee.costCentre },
+              { label: 'Duty Station', value: employee.dutyStation },
+              { label: 'Reporting Manager', value: employee.reportingManager },
               { label: 'Start Date', value: new Date(employee.startDate).toLocaleDateString('en-NA', { day: '2-digit', month: 'short', year: 'numeric' }) },
               { label: 'Years of Service', value: `${yearsService} years` },
               { label: 'Email', value: employee.email },
-              { label: 'Phone', value: employee.phone },
-              { label: 'Gender', value: employee.gender },
+              { label: 'Working Days', value: employee.workingDays },
+              { label: 'Overtime Eligible', value: employee.overtimeEligible ? 'Yes' : 'No' },
             ].map(f => (
-              <div key={f.label} className="bg-cream-100 rounded-xl p-3">
+              <div key={f.label} className={`rounded-xl p-3 ${f.missing ? 'bg-red-50 border border-red-200' : 'bg-cream-100'}`}>
                 <div className="label">{f.label}</div>
-                <div className="text-sm font-medium text-navy-900 truncate">{f.value}</div>
+                <div className={`text-sm font-medium truncate ${f.missing ? 'text-red-600' : 'text-navy-900'}`}>{f.value}</div>
               </div>
             ))}
           </div>
@@ -133,6 +139,27 @@ function EmployeeModal({ employee, onClose }) {
               </div>
             </div>
           </div>
+
+          {/* Loan balances (tracked per deduction config) */}
+          {employee.loans?.length > 0 && (
+            <div>
+              <div className="section-title">Loan Balances</div>
+              <div className="space-y-2">
+                {employee.loans.map((loan, i) => (
+                  <div key={i} className="flex items-center justify-between bg-cream-100 rounded-xl px-4 py-3">
+                    <div>
+                      <div className="text-sm font-medium text-navy-900">{loan.type}</div>
+                      <div className="text-xs text-navy-400">{formatNAD(loan.monthly)} deducted monthly</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-bold text-navy-900 tabular-nums">{formatNAD(loan.balance)}</div>
+                      <div className="text-xs text-navy-400">outstanding</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Leave balances */}
           <div>

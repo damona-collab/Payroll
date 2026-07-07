@@ -38,12 +38,20 @@ const deptData = Object.entries(
 ).map(([dept, d]) => ({ dept, ...d }))
 
 const REPORT_TYPES = [
-  { id: 'payroll-summary', label: 'Payroll Summary', icon: CreditCard, desc: 'Monthly gross, deductions, and net pay summary' },
-  { id: 'paye-report', label: 'NamRA PAYE Return', icon: FileText, desc: 'Employee tax schedule for NamRA submission' },
-  { id: 'ssc-report', label: 'SSC Contribution Report', icon: Building2, desc: 'SSC contributions per employee for the period' },
-  { id: 'payroll-register', label: 'Payroll Register', icon: Users, desc: 'Full payroll register with all earnings and deductions' },
-  { id: 'leave-report', label: 'Leave Report', icon: Calendar, desc: 'Leave balances and transactions by employee' },
-  { id: 'vet-report', label: 'VET Levy Report', icon: BarChart3, desc: 'Vocational Education & Training levy summary' },
+  // Monthly reports (config section K)
+  { id: 'payroll-register', label: 'Payroll Register', icon: Users, desc: 'Full register with all earnings, deductions, and employer contributions', group: 'Monthly' },
+  { id: 'bank-listing', label: 'Bank Net Pay Listing', icon: CreditCard, desc: 'Bank payment file listing for salary transfers', group: 'Monthly' },
+  { id: 'paye-report', label: 'NamRA PAYE Return', icon: FileText, desc: 'Employee tax schedule for NamRA submission (due 20th)', group: 'Monthly' },
+  { id: 'ssc-report', label: 'SSC Contribution Report', icon: Building2, desc: 'EE + ER contributions per employee for the period', group: 'Monthly' },
+  { id: 'pension-medical', label: 'Pension & Medical Schedules', icon: FileText, desc: 'Fund contribution schedules per provider', group: 'Monthly' },
+  { id: 'cost-centre', label: 'Costing by Cost Centre', icon: BarChart3, desc: 'Payroll cost split by cost centre and department', group: 'Monthly' },
+  // Annual reports
+  { id: 'tax-certificates', label: 'Tax Certificates (ITAS)', icon: FileText, desc: 'Annual employee tax certificates for ITAS submission', group: 'Annual' },
+  { id: 'paye-recon', label: 'Annual PAYE Reconciliation', icon: FileText, desc: 'Year-end PAYE reconciliation to NamRA', group: 'Annual' },
+  { id: 'wc-declaration', label: "Workmen's Compensation Declaration", icon: Building2, desc: 'Annual WC earnings declaration and assessment', group: 'Annual' },
+  { id: 'leave-liability', label: 'Leave Liability Report', icon: Calendar, desc: 'Accrued leave provision for financial statements', group: 'Annual' },
+  { id: 'vet-report', label: 'VET Levy Report', icon: BarChart3, desc: 'Vocational Education & Training levy summary (NTA)', group: 'Annual' },
+  { id: 'audit-pack', label: 'Payroll Audit Support Pack', icon: FileText, desc: 'Change logs, approvals, and audit trail extracts', group: 'Annual' },
 ]
 
 function CustomTooltip({ active, payload, label }) {
@@ -201,24 +209,31 @@ export default function Reports() {
           <Download size={15} className="text-navy-600" />
           Generate Reports — {period}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-          {REPORT_TYPES.map(r => (
-            <button
-              key={r.id}
-              className="flex items-start gap-3 p-4 rounded-xl border border-cream-200 bg-cream-50
-                         hover:bg-navy-900 hover:border-navy-900 hover:text-cream-100 transition-all duration-150 group text-left"
-            >
-              <div className="w-9 h-9 bg-navy-100 group-hover:bg-white/10 rounded-lg flex items-center justify-center shrink-0 transition-colors">
-                <r.icon size={16} className="text-navy-600 group-hover:text-cream-100 transition-colors" />
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm font-semibold text-navy-900 group-hover:text-cream-100 transition-colors">{r.label}</div>
-                <div className="text-xs text-navy-400 group-hover:text-navy-300 transition-colors mt-0.5 leading-tight">{r.desc}</div>
-              </div>
-              <Download size={14} className="text-navy-300 shrink-0 mt-0.5 group-hover:text-gold-400 transition-colors" />
-            </button>
-          ))}
-        </div>
+        {['Monthly', 'Annual'].map(group => (
+          <div key={group} className="mb-5 last:mb-0">
+            <div className="text-xs font-bold text-navy-500 uppercase tracking-wider mb-2">
+              {group} Reports
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {REPORT_TYPES.filter(r => r.group === group).map(r => (
+                <button
+                  key={r.id}
+                  className="flex items-start gap-3 p-4 rounded-xl border border-cream-200 bg-cream-50
+                             hover:bg-navy-900 hover:border-navy-900 hover:text-cream-100 transition-all duration-150 group text-left"
+                >
+                  <div className="w-9 h-9 bg-navy-100 group-hover:bg-white/10 rounded-lg flex items-center justify-center shrink-0 transition-colors">
+                    <r.icon size={16} className="text-navy-600 group-hover:text-cream-100 transition-colors" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-semibold text-navy-900 group-hover:text-cream-100 transition-colors">{r.label}</div>
+                    <div className="text-xs text-navy-400 group-hover:text-navy-300 transition-colors mt-0.5 leading-tight">{r.desc}</div>
+                  </div>
+                  <Download size={14} className="text-navy-300 shrink-0 mt-0.5 group-hover:text-gold-400 transition-colors" />
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   )

@@ -26,7 +26,16 @@ export const SSC_MAX_MONTHLY = 81     // Maximum N$81/month per party
 export const SSC_CEILING = 9000       // Contribution based on earnings up to N$9,000/month
 
 // VET (Vocational Education & Training) Levy — employer only
+// Applies to employers with annual payroll above N$1,000,000
 export const VET_RATE = 0.01
+
+// Workmen's Compensation (Employees' Compensation Act 30 of 1941)
+// Employer-only assessment. Earnings capped at N$81,300 p.a.;
+// employees earning above the cap are excluded from WC cover.
+// Rate is industry-risk-class dependent — configurable, default 1%.
+export const WC_RATE = 0.01
+export const WC_EARNINGS_CEILING_ANNUAL = 81300
+export const WC_EARNINGS_CEILING_MONTHLY = Math.round((WC_EARNINGS_CEILING_ANNUAL / 12) * 100) / 100
 
 /**
  * Calculate annual PAYE tax on annual income (before rebate)
@@ -71,48 +80,93 @@ export function calculateSSC(monthlyGross) {
 }
 
 /**
- * Full payroll calculation for one employee per month
+ * Calculate Workmen's Compensation assessment (employer only).
+ * Employees with annual earnings above the WC ceiling are excluded from cover.
+ */
+export function calculateWC(monthlyGross) {
+  const annual = monthlyGross * 12
+  if (annual > WC_EARNINGS_CEILING_ANNUAL) return { assessment: 0, covered: false }
+  const assessment = Math.round(monthlyGross * WC_RATE * 100) / 100
+  return { assessment, covered: true }
+}
+
+/**
+ * Full payroll calculation for one employee per month.
+ *
+ * Income streams (per Katelago Payroll Configuration, sheet 10B):
+ * - Gross income   = cash earnings (basic + allowances + housing + overtime + variable pay)
+ * - Taxable income = gross cash taxable portion + fringe benefit notional values - pension deduction
+ * - SSC income     = basic salary (capped at N$9,000/month)
+ * - WC income      = gross, only where annual earnings <= WC ceiling
+ *
+ * Deduction priority with net-pay protection:
+ * 1. Statutory (PAYE, SSC EE) — always deducted
+ * 2. Contractual (pension EE, medical aid EE) — always deducted
+ * 3. Voluntary (loans, purchases, uniform, social club, other) — reduced/skipped
+ *    if they would drive net pay negative
+ *
  * @param {Object} params
  * @param {number} params.basicSalary
- * @param {number} params.allowances        - Taxable allowances
- * @param {number} params.housingAllowance  - Non-taxable housing allowance (if structured correctly)
- * @param {number} params.pensionEmployee   - Employee pension contribution (deductible, max 27.5% of income or N$150k)
- * @param {number} params.medicalAid        - Medical aid contribution (not deductible for PAYE in Namibia)
- * @param {number} params.otherDeductions   - Other post-tax deductions (loans, etc.)
+ * @param {number} params.allowances        - Taxable cash allowances (transport, airtime, etc.)
+ * @param {number} params.housingAllowance  - Housing allowance (cash, taxable)
+ * @param {number} params.overtimePay       - Overtime earnings (taxable, non-pensionable)
+ * @param {number} params.fringeBenefits    - Notional fringe benefit value (taxable, NOT cash)
+ * @param {number} params.pensionEmployee   - Employee pension contribution (deductible, max 27.5% or N$150k p.a.)
+ * @param {number} params.pensionEmployer   - Employer pension contribution
+ * @param {number} params.medicalAid        - Medical aid EE contribution (not PAYE-deductible in Namibia)
+ * @param {number} params.medicalAidEmployer- Medical aid ER contribution
+ * @param {number} params.otherDeductions   - Voluntary post-tax deductions (loans, purchases, etc.)
  */
 export function calculatePayroll({
   basicSalary = 0,
   allowances = 0,
   housingAllowance = 0,
+  overtimePay = 0,
+  fringeBenefits = 0,
   pensionEmployee = 0,
+  pensionEmployer = 0,
   medicalAid = 0,
+  medicalAidEmployer = 0,
   otherDeductions = 0,
 }) {
-  const grossSalary = basicSalary + allowances + housingAllowance
+  // Gross = cash earnings only (fringe benefits are notional, not cash)
+  const grossSalary = basicSalary + allowances + housingAllowance + overtimePay
 
   // Pension deduction is tax-deductible (up to 27.5% of gross or N$150,000/year)
   const maxPensionDeductible = Math.min(grossSalary * 12 * 0.275, 150000) / 12
   const pensionDeductible = Math.min(pensionEmployee, maxPensionDeductible)
 
-  // Taxable income = gross - pension deduction (housing allowance kept in gross per NamRA rules)
-  const taxableIncome = basicSalary + allowances - pensionDeductible
+  // True taxable income = cash taxable earnings + fringe benefit notional values - pension deduction
+  const taxableIncome = Math.max(0, grossSalary + fringeBenefits - pensionDeductible)
 
   const paye = calculateMonthlyPAYE(taxableIncome, 0)
   const ssc = calculateSSC(basicSalary)
+  const wc = calculateWC(grossSalary)
 
-  const totalDeductions = paye + ssc.employee + pensionEmployee + medicalAid + otherDeductions
+  // Deduction priority + net-pay protection (no negative net pay)
+  const statutory = paye + ssc.employee
+  const contractual = pensionEmployee + medicalAid
+  const afterMandatory = grossSalary - statutory - contractual
+  const voluntaryApplied = Math.min(otherDeductions, Math.max(0, afterMandatory))
+  const voluntarySkipped = Math.round((otherDeductions - voluntaryApplied) * 100) / 100
+
+  const totalDeductions = statutory + contractual + voluntaryApplied
   const netPay = Math.max(0, grossSalary - totalDeductions)
 
   // Employer costs
   const vetLevy = Math.round(grossSalary * VET_RATE * 100) / 100
-  const totalEmployerCost = grossSalary + ssc.employer + vetLevy
+  const totalEmployerCost = grossSalary + ssc.employer + vetLevy + wc.assessment
+    + pensionEmployer + medicalAidEmployer
 
   return {
     grossSalary: Math.round(grossSalary * 100) / 100,
     basicSalary: Math.round(basicSalary * 100) / 100,
     allowances: Math.round(allowances * 100) / 100,
     housingAllowance: Math.round(housingAllowance * 100) / 100,
+    overtimePay: Math.round(overtimePay * 100) / 100,
+    fringeBenefits: Math.round(fringeBenefits * 100) / 100,
     taxableIncome: Math.round(taxableIncome * 100) / 100,
+    sscIncome: Math.round(Math.min(basicSalary, SSC_CEILING) * 100) / 100,
     pensionDeductible: Math.round(pensionDeductible * 100) / 100,
     // Deductions
     paye: Math.round(paye * 100) / 100,
@@ -120,15 +174,39 @@ export function calculatePayroll({
     sscEmployer: ssc.employer,
     pensionEmployee: Math.round(pensionEmployee * 100) / 100,
     medicalAid: Math.round(medicalAid * 100) / 100,
-    otherDeductions: Math.round(otherDeductions * 100) / 100,
+    otherDeductions: Math.round(voluntaryApplied * 100) / 100,
+    voluntarySkipped,
+    netPayProtected: voluntarySkipped > 0,
     totalDeductions: Math.round(totalDeductions * 100) / 100,
     netPay: Math.round(netPay * 100) / 100,
     // Employer
+    pensionEmployer: Math.round(pensionEmployer * 100) / 100,
+    medicalAidEmployer: Math.round(medicalAidEmployer * 100) / 100,
     vetLevy: Math.round(vetLevy * 100) / 100,
+    wcAssessment: wc.assessment,
+    wcCovered: wc.covered,
     totalEmployerCost: Math.round(totalEmployerCost * 100) / 100,
     // Effective rate
     effectiveTaxRate: grossSalary > 0 ? Math.round((paye / grossSalary) * 10000) / 100 : 0,
   }
+}
+
+/**
+ * Pre-payroll validation (per config: "No payroll run may proceed if
+ * mandatory statutory fields are missing").
+ * Returns an array of blocking errors; empty = employee may be paid.
+ */
+export function validateEmployeeForPayroll(emp) {
+  const errors = []
+  if (!emp.id) errors.push('Missing employee number')
+  if (!emp.firstName || !emp.lastName) errors.push('Missing full legal name')
+  if (!emp.idNumber) errors.push('Missing ID / passport number')
+  if (!emp.sscNumber) errors.push('Missing SSC number')
+  if (!emp.taxNumber) errors.push('Missing tax reference number')
+  if (!emp.startDate) errors.push('Missing employment start date')
+  if (!emp.employmentType) errors.push('Missing employment category')
+  if (!emp.bankName || !emp.accountNumber) errors.push('Missing banking details')
+  return errors
 }
 
 /**
@@ -201,12 +279,13 @@ export const NOTICE_PERIODS = [
  * Overtime rates (Labour Act, Section 17)
  */
 export const OVERTIME = {
-  weekday: { rate: 1.5, label: '1.5× — Weekday overtime (first 3 hours)' },
-  extended: { rate: 2.0, label: '2× — Beyond 3 hours weekday / Sunday / Public Holiday' },
-  sunday: { rate: 2.0, label: '2× — Sunday overtime' },
+  normal:        { rate: 1.5, label: '1.5× — Normal overtime (weekday)' },
+  special:       { rate: 2.0, label: '2× — Special overtime (beyond 3 hours weekday)' },
+  sunday:        { rate: 2.0, label: '2× — Sunday overtime' },
+  publicHoliday: { rate: 2.0, label: '2× — Public holiday overtime' },
 }
 
-export function calculateOvertimePay(hourlyRate, hours, type = 'weekday') {
+export function calculateOvertimePay(hourlyRate, hours, type = 'normal') {
   const rate = OVERTIME[type]?.rate ?? 1.5
   return Math.round(hourlyRate * hours * rate * 100) / 100
 }

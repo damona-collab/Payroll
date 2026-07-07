@@ -50,11 +50,12 @@ function PayslipDocument({ employee, period }) {
             <div className="text-xs text-navy-400 uppercase tracking-wide mb-0.5">Employee No.</div>
             <div className="font-medium text-navy-900">{employee.id}</div>
             <div className="text-xs text-navy-500">Tax No: {employee.taxNumber}</div>
+            <div className="text-xs text-navy-500">SSC No: {employee.sscNumber || '—'}</div>
           </div>
           <div>
             <div className="text-xs text-navy-400 uppercase tracking-wide mb-0.5">Department</div>
             <div className="font-medium text-navy-900">{employee.department}</div>
-            <div className="text-xs text-navy-500">{employee.employmentType}</div>
+            <div className="text-xs text-navy-500">{employee.employmentType} &bull; {employee.costCentre}</div>
           </div>
         </div>
       </div>
@@ -140,6 +141,42 @@ function PayslipDocument({ employee, period }) {
               <div className="text-sm font-bold text-navy-900">{f.value}</div>
             </div>
           ))}
+        </div>
+
+        {/* Fringe benefits (notional — taxed, not paid in cash) */}
+        {p.fringeBenefits > 0 && (
+          <div className="mt-4">
+            <div className="text-xs font-bold text-navy-600 uppercase tracking-wider mb-2">
+              Fringe Benefits (Notional Values)
+            </div>
+            <div className="bg-cream-100 rounded-lg px-4 py-3 flex justify-between items-center">
+              <span className="text-sm text-navy-700">
+                Taxable fringe benefit value — included in taxable income, not paid in cash
+              </span>
+              <span className="text-sm font-bold text-navy-900 tabular-nums">{formatNAD(p.fringeBenefits)}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Employer contributions (for transparency — not deducted from pay) */}
+        <div className="mt-4">
+          <div className="text-xs font-bold text-navy-600 uppercase tracking-wider mb-2">
+            Employer Contributions (Company Cost)
+          </div>
+          <div className="bg-cream-100 rounded-lg px-4 py-2 divide-y divide-cream-200">
+            {[
+              { label: 'SSC — Employer', value: p.sscEmployer },
+              p.pensionEmployer > 0 && { label: 'Pension Fund — Employer', value: p.pensionEmployer },
+              p.medicalAidEmployer > 0 && { label: 'Medical Aid — Employer', value: p.medicalAidEmployer },
+              p.wcAssessment > 0 && { label: "Workmen's Compensation", value: p.wcAssessment },
+              { label: 'VET Levy', value: p.vetLevy },
+            ].filter(Boolean).map(r => (
+              <div key={r.label} className="flex justify-between py-1.5 text-sm">
+                <span className="text-navy-600">{r.label}</span>
+                <span className="text-navy-900 font-medium tabular-nums">{formatNAD(r.value)}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Leave summary */}

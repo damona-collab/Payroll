@@ -8,6 +8,7 @@ import Payslips from './pages/Payslips.jsx'
 import LeaveManagement from './pages/LeaveManagement.jsx'
 import TaxCalculator from './pages/TaxCalculator.jsx'
 import Reports from './pages/Reports.jsx'
+import Configuration from './pages/Configuration.jsx'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/leave"       element={<LeaveManagement />} />
           <Route path="/tax-calc"    element={<TaxCalculator />} />
           <Route path="/reports"     element={<Reports />} />
+          <Route path="/config"      element={<Configuration />} />
         </Routes>
       </Layout>
     </BrowserRouter>

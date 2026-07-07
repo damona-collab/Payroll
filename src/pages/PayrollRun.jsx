@@ -4,7 +4,7 @@ import {
   ChevronUp, RefreshCw, CheckCircle2, Circle,
 } from 'lucide-react'
 import { employees } from '../data/employees.js'
-import { formatNAD, calculatePayroll } from '../utils/namibianTax.js'
+import { formatNAD, calculatePayroll, validateEmployeeForPayroll } from '../utils/namibianTax.js'
 
 const PERIODS = [
   'April 2025', 'March 2025', 'February 2025', 'January 2025',
@@ -13,9 +13,9 @@ const PERIODS = [
 
 const STEPS = [
   { id: 1, label: 'Select Pay Period',       desc: 'Choose the payroll month' },
-  { id: 2, label: 'Review Payroll Data',     desc: 'Verify employee records and adjustments' },
+  { id: 2, label: 'Validate & Review',       desc: 'Pre-payroll validation, records and adjustments' },
   { id: 3, label: 'Calculate & Verify',      desc: 'Run calculations and approve figures' },
-  { id: 4, label: 'Approve & Process',       desc: 'Finalise and generate payslips' },
+  { id: 4, label: 'Approve & Process',       desc: 'Finalise, lock period, generate payslips' },
 ]
 
 function StepIndicator({ steps, current }) {
@@ -72,8 +72,11 @@ function PayrollTable({ data, adjustments, onAdjust }) {
               basicSalary: row.basicSalary + (adj.basicAdj || 0),
               allowances: row.allowances + (adj.allowAdj || 0),
               housingAllowance: row.housingAllowance,
+              fringeBenefits: row.fringeBenefits,
               pensionEmployee: row.pensionEmployee,
+              pensionEmployer: row.pensionEmployer,
               medicalAid: row.medicalAid,
+              medicalAidEmployer: row.medicalAidEmployer,
               otherDeductions: row.otherDeductions,
             })
             const isExpanded = expanded === row.id
@@ -214,14 +217,27 @@ export default function PayrollRun() {
     }))
   }
 
-  const totals = employees.reduce((acc, emp) => {
+  // Pre-payroll validation: employees with missing statutory fields are
+  // excluded from the run ("No payroll run may proceed if mandatory
+  // statutory fields are missing").
+  const validation = employees.map(emp => ({
+    emp,
+    errors: validateEmployeeForPayroll(emp),
+  }))
+  const validEmployees = validation.filter(v => v.errors.length === 0).map(v => v.emp)
+  const blocked = validation.filter(v => v.errors.length > 0)
+
+  const totals = validEmployees.reduce((acc, emp) => {
     const adj = adjustments[emp.id] || {}
     const calc = calculatePayroll({
       basicSalary: emp.basicSalary + (adj.basicAdj || 0),
       allowances: emp.allowances + (adj.allowAdj || 0),
       housingAllowance: emp.housingAllowance,
+      fringeBenefits: emp.fringeBenefits,
       pensionEmployee: emp.pensionEmployee,
+      pensionEmployer: emp.pensionEmployer,
       medicalAid: emp.medicalAid,
+      medicalAidEmployer: emp.medicalAidEmployer,
       otherDeductions: emp.otherDeductions,
     })
     return {
@@ -233,9 +249,10 @@ export default function PayrollRun() {
       medical: acc.medical + emp.medicalAid,
       net: acc.net + calc.netPay,
       vet: acc.vet + calc.vetLevy,
+      wc: acc.wc + calc.wcAssessment,
       total: acc.total + calc.totalEmployerCost,
     }
-  }, { gross: 0, paye: 0, sscEmp: 0, sscEmr: 0, pension: 0, medical: 0, net: 0, vet: 0, total: 0 })
+  }, { gross: 0, paye: 0, sscEmp: 0, sscEmr: 0, pension: 0, medical: 0, net: 0, vet: 0, wc: 0, total: 0 })
 
   return (
     <div className="space-y-5">
@@ -285,24 +302,62 @@ export default function PayrollRun() {
         </div>
       )}
 
-      {/* Step 2 — Review data */}
+      {/* Step 2 — Validate & Review */}
       {step === 2 && (
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-navy-900">Review Payroll Data — {period}</h2>
+              <h2 className="text-base font-semibold text-navy-900">Validate & Review — {period}</h2>
               <p className="text-xs text-navy-400 mt-0.5">Expand rows to add adjustments (bonus, overtime, deductions)</p>
             </div>
             <div className="flex gap-2">
               <button className="btn-ghost" onClick={() => setStep(1)}>Back</button>
-              <button className="btn-primary" onClick={() => setStep(3)}>
+              <button
+                className="btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
+                disabled={validEmployees.length === 0}
+                onClick={() => setStep(3)}
+              >
                 Calculate <Play size={14} />
               </button>
             </div>
           </div>
+
+          {/* Pre-payroll validation results */}
+          {blocked.length > 0 ? (
+            <div className="card p-4 border-l-4 border-red-500 bg-red-50">
+              <div className="flex items-start gap-3">
+                <AlertCircle size={16} className="text-red-600 mt-0.5 shrink-0" />
+                <div className="flex-1">
+                  <div className="text-sm font-semibold text-red-800">
+                    {blocked.length} employee{blocked.length > 1 ? 's' : ''} excluded — mandatory statutory fields missing
+                  </div>
+                  <div className="mt-2 space-y-1.5">
+                    {blocked.map(({ emp, errors }) => (
+                      <div key={emp.id} className="text-sm text-red-700">
+                        <span className="font-medium">{emp.firstName} {emp.lastName} ({emp.id})</span>
+                        <span className="text-red-500"> — {errors.join('; ')}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-xs text-red-500 mt-2">
+                    Per configuration policy, no employee may be paid without a complete statutory profile.
+                    Update the employee master data to include them in this run.
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="card p-3 border-l-4 border-emerald-500 bg-emerald-50 flex items-center gap-2">
+              <CheckCircle2 size={15} className="text-emerald-600 shrink-0" />
+              <span className="text-sm text-emerald-800 font-medium">
+                Pre-payroll validation passed — all {validEmployees.length} employees have complete statutory profiles.
+              </span>
+            </div>
+          )}
+
           <div className="card overflow-hidden">
             <PayrollTable
-              data={employees}
+              data={validEmployees}
               adjustments={adjustments}
               onAdjust={handleAdjust}
             />
@@ -357,6 +412,7 @@ export default function PayrollRun() {
                   { label: 'SSC Employee Contributions',  value: totals.sscEmp, authority: 'SSC' },
                   { label: 'SSC Employer Contributions',  value: totals.sscEmr, authority: 'SSC' },
                   { label: 'VET Levy (Employer 1%)',      value: totals.vet,    authority: 'NTA' },
+                  { label: "Workmen's Compensation",      value: totals.wc,     authority: 'WC' },
                 ].map(r => (
                   <div key={r.label} className="flex items-center justify-between py-1.5 border-b border-cream-100 last:border-0">
                     <div>
@@ -381,10 +437,12 @@ export default function PayrollRun() {
               <div>
                 <div className="text-sm font-semibold text-amber-800">Pre-Approval Checklist</div>
                 <ul className="mt-2 space-y-1 text-sm text-amber-700">
+                  <li className="flex items-center gap-2"><Check size={12} /> Pre-payroll validation passed (SSC + tax reference present)</li>
                   <li className="flex items-center gap-2"><Check size={12} /> All employee banking details verified</li>
                   <li className="flex items-center gap-2"><Check size={12} /> PAYE calculations align with NamRA tax tables 2024/2025</li>
                   <li className="flex items-center gap-2"><Check size={12} /> SSC contributions within statutory cap (N$81/month)</li>
-                  <li className="flex items-center gap-2"><Check size={12} /> Payroll approved by Finance Manager</li>
+                  <li className="flex items-center gap-2"><Check size={12} /> Net-pay protection applied — no negative net pay</li>
+                  <li className="flex items-center gap-2"><Check size={12} /> Payroll approved by Finance Manager — period will be locked on processing</li>
                 </ul>
               </div>
             </div>
@@ -403,7 +461,8 @@ export default function PayrollRun() {
               <h2 className="text-xl font-bold text-navy-900 mb-2">Ready to Process</h2>
               <p className="text-sm text-navy-500 mb-6">
                 Payroll for <strong>{period}</strong> is approved and ready to be processed.
-                This will generate payslips and bank payment files.
+                This will generate payslips and bank payment files, and the period will be
+                <strong> locked</strong> — no further edits without an audited retro adjustment.
               </p>
               <button className="btn-primary mx-auto" onClick={() => setProcessed(true)}>
                 <RefreshCw size={15} /> Process Payroll
@@ -414,10 +473,11 @@ export default function PayrollRun() {
               <div className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <CheckCircle2 size={28} className="text-white" />
               </div>
-              <h2 className="text-xl font-bold text-navy-900 mb-2">Payroll Processed!</h2>
+              <h2 className="text-xl font-bold text-navy-900 mb-2">Payroll Processed &amp; Period Locked</h2>
               <p className="text-sm text-navy-500 mb-6">
-                <strong>{period}</strong> payroll has been successfully processed.
-                {employees.length} payslips generated. Bank payment file ready for upload.
+                <strong>{period}</strong> payroll has been successfully processed —
+                {' '}{validEmployees.length} payslips generated, bank payment file ready,
+                and the period is now locked with a full audit trail.
               </p>
               <div className="flex gap-2 justify-center">
                 <button className="btn-secondary"><Download size={14} /> Bank File</button>

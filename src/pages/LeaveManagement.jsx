@@ -5,6 +5,7 @@ import {
 } from 'lucide-react'
 import { employees } from '../data/employees.js'
 import { LEAVE_ENTITLEMENTS, OVERTIME, NOTICE_PERIODS } from '../utils/namibianTax.js'
+import { PUBLIC_HOLIDAYS_2025 } from '../data/payComponents.js'
 
 const LEAVE_TYPES = ['Annual Leave', 'Sick Leave', 'Family Responsibility', 'Maternity Leave', 'Unpaid Leave']
 const STATUS_OPTIONS = ['All', 'Pending', 'Approved', 'Declined']
@@ -159,7 +160,7 @@ export default function LeaveManagement() {
     <div className="space-y-5">
       {/* Tabs */}
       <div className="card p-1 flex gap-1 w-fit">
-        {['applications', 'balances', 'act'].map(tab => (
+        {['applications', 'balances', 'holidays', 'act'].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -169,7 +170,9 @@ export default function LeaveManagement() {
                 : 'text-navy-600 hover:bg-cream-100'
             }`}
           >
-            {tab === 'act' ? 'Labour Act Reference' : tab.charAt(0).toUpperCase() + tab.slice(1)}
+            {tab === 'act' ? 'Labour Act Reference' :
+             tab === 'holidays' ? 'Public Holidays' :
+             tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
       </div>
@@ -341,6 +344,48 @@ export default function LeaveManagement() {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Public Holidays */}
+      {activeTab === 'holidays' && (
+        <div className="card overflow-hidden">
+          <div className="px-5 py-3 border-b border-cream-200 bg-cream-50 flex items-center justify-between">
+            <div className="text-sm font-semibold text-navy-900">Namibian Public Holidays — 2025</div>
+            <span className="badge badge-navy">{PUBLIC_HOLIDAYS_2025.length} days</span>
+          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-cream-200">
+                <th className="table-header">Date</th>
+                <th className="table-header">Day</th>
+                <th className="table-header">Holiday</th>
+                <th className="table-header">Work Pay Rule</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-cream-100">
+              {PUBLIC_HOLIDAYS_2025.map(h => {
+                const d = new Date(h.date + 'T00:00:00')
+                return (
+                  <tr key={h.date + h.name} className="hover:bg-cream-50 transition-colors">
+                    <td className="table-cell tabular-nums">
+                      {d.toLocaleDateString('en-NA', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </td>
+                    <td className="table-cell text-navy-500">
+                      {d.toLocaleDateString('en-NA', { weekday: 'long' })}
+                    </td>
+                    <td className="table-cell font-medium text-navy-900">{h.name}</td>
+                    <td className="table-cell"><span className="badge badge-blue">2× pay if worked</span></td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+          <div className="px-5 py-3 bg-cream-50 border-t border-cream-200 text-xs text-navy-500">
+            Public holiday work is paid at double rate (Labour Act s.22). Where a public holiday
+            falls on a Sunday, the following Monday is observed. Sunday + public holiday overlaps
+            apply the higher rate, not both.
           </div>
         </div>
       )}
