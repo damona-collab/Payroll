@@ -73,15 +73,21 @@ npm run build    # production build
 
 PayFuta ships as a proper installable desktop application (Electron). Build the installer once, then install it like any other program — it gets its own icon, Start Menu entry, and desktop shortcut automatically.
 
-**With Docker (recommended on Linux — no Node.js needed):**
+**One command on a Linux desktop (Docker required, no Node.js needed):**
+
+```bash
+./install-payfuta.sh
+```
+
+This builds the app, installs it, adds **PayFuta to your application menu**, and puts a **PayFuta shortcut on your Desktop** automatically.
+
+**Or build only (without installing):**
 
 ```bash
 ./build-desktop-app.sh            # Linux installers (AppImage + .deb)
 ./build-desktop-app.sh windows    # Windows .exe installer (built via Wine)
 sudo apt install ./release/namibia-payroll_1.0.0_amd64.deb
 ```
-
-Installing the `.deb` adds **PayFuta to your application menu** with its icon — pin it to your dock/desktop from there.
 
 **With Node.js directly:**
 
