@@ -1,15 +1,18 @@
 import React, { useState } from 'react'
 import {
   BarChart3, Download, FileText, TrendingUp, Users,
-  CreditCard, Building2, Calendar, Search, Eye, Folder,
+  CreditCard, Building2, Calendar, Search, Eye, Folder, X, FileSpreadsheet,
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, LineChart, Line, Legend,
 } from 'recharts'
 import { employees, COMPANY_INFO } from '../data/employees.js'
+import { usePayroll } from '../store/PayrollProvider.jsx'
 import { REPORT_CATALOG, REPORT_CATEGORIES } from '../data/payComponents.js'
 import { formatNAD } from '../utils/namibianTax.js'
+import { buildReport } from '../utils/reports.js'
+import { downloadCSV, downloadReportPDF } from '../utils/download.js'
 
 const CATEGORY_ICON = {
   Payroll: CreditCard, Statutory: FileText, 'Human Resources': Users,
@@ -43,10 +46,73 @@ const deptData = Object.entries(
   }, {})
 ).map(([dept, d]) => ({ dept, ...d }))
 
+// Modal that previews a real report table and offers CSV / PDF download
+function ReportViewer({ report, employees, onClose }) {
+  const data = buildReport(report.name, employees)
+  return (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
+        <div className="bg-navy-900 rounded-t-2xl px-6 py-4 flex items-center justify-between shrink-0">
+          <div>
+            <div className="text-cream-100 font-semibold">{report.name}</div>
+            <div className="text-navy-300 text-xs">{report.desc}</div>
+          </div>
+          <button onClick={onClose} className="text-navy-400 hover:text-cream-100"><X size={20} /></button>
+        </div>
+        <div className="p-4 overflow-auto flex-1">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-cream-100 border-b border-cream-200">
+                {data.columns.map(c => <th key={c} className="text-left px-3 py-2 text-xs font-semibold text-navy-600 uppercase tracking-wide whitespace-nowrap">{c}</th>)}
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-cream-100">
+              {data.rows.map((row, i) => (
+                <tr key={i} className="hover:bg-cream-50">
+                  {row.map((cell, j) => <td key={j} className="px-3 py-2 text-navy-800 whitespace-nowrap tabular-nums">{cell}</td>)}
+                </tr>
+              ))}
+            </tbody>
+            {data.totals && (
+              <tfoot>
+                <tr className="border-t-2 border-navy-900 bg-cream-50 font-bold">
+                  {data.totals.map((cell, j) => <td key={j} className="px-3 py-2 text-navy-900 whitespace-nowrap tabular-nums">{cell}</td>)}
+                </tr>
+              </tfoot>
+            )}
+          </table>
+          {data.rows.length === 0 && <div className="text-center py-10 text-navy-400">No data for this period.</div>}
+        </div>
+        <div className="px-6 py-3 border-t border-cream-200 flex justify-between items-center shrink-0">
+          <div className="text-xs text-navy-400">{data.rows.length} rows &bull; {COMPANY_INFO.name}</div>
+          <div className="flex gap-2">
+            <button className="btn-secondary" onClick={() => {
+              const objRows = data.rows.map(r => Object.fromEntries(data.columns.map((c, i) => [c, r[i]])))
+              downloadCSV(objRows, `${report.name.replace(/[^a-z0-9]+/gi, '_')}.csv`)
+            }}><FileSpreadsheet size={14} /> Download CSV</button>
+            <button className="btn-primary" onClick={() => {
+              const rows = [...data.rows]; if (data.totals) rows.push(data.totals)
+              downloadReportPDF(report.name, data.columns, rows, { subtitle: report.desc, company: COMPANY_INFO.name })
+            }}><Download size={14} /> Download PDF</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ReportLibrary() {
+  const { employees } = usePayroll()
   const [engine, setEngine] = useState('NextGen')
   const [category, setCategory] = useState('All')
   const [query, setQuery] = useState('')
+  const [viewing, setViewing] = useState(null)
+
+  function quickCSV(report) {
+    const data = buildReport(report.name, employees)
+    const objRows = data.rows.map(r => Object.fromEntries(data.columns.map((c, i) => [c, r[i]])))
+    downloadCSV(objRows, `${report.name.replace(/[^a-z0-9]+/gi, '_')}.csv`)
+  }
 
   const filtered = REPORT_CATALOG.filter(r => {
     if (engine === 'NextGen' && !r.nextgen) return false
@@ -112,10 +178,10 @@ function ReportLibrary() {
                       ))}
                     </div>
                     <div className="flex gap-1 shrink-0">
-                      <button className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors" title="Preview">
+                      <button onClick={() => setViewing(r)} className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors" title="View">
                         <Eye size={15} />
                       </button>
-                      <button className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors" title="Download">
+                      <button onClick={() => quickCSV(r)} className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors" title="Download CSV">
                         <Download size={15} />
                       </button>
                     </div>
@@ -129,6 +195,8 @@ function ReportLibrary() {
           <div className="text-center py-10 text-navy-400 text-sm">No reports match your filters.</div>
         )}
       </div>
+
+      {viewing && <ReportViewer report={viewing} employees={employees} onClose={() => setViewing(null)} />}
     </div>
   )
 }

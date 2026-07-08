@@ -1,7 +1,10 @@
 import React, { useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Search, Printer, Download, Eye, FileText, Building2 } from 'lucide-react'
-import { employees, COMPANY_INFO } from '../data/employees.js'
+import { COMPANY_INFO } from '../data/employees.js'
+import { usePayroll } from '../store/PayrollProvider.jsx'
 import { formatNAD } from '../utils/namibianTax.js'
+import { downloadPayslipPDF } from '../utils/download.js'
 
 const PERIODS = ['April 2025', 'March 2025', 'February 2025', 'January 2025', 'December 2024']
 
@@ -229,6 +232,8 @@ function PayslipDocument({ employee, period }) {
 }
 
 export default function Payslips() {
+  const navigate = useNavigate()
+  const { employees } = usePayroll()
   const [period, setPeriod] = useState(PERIODS[0])
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState(null)
@@ -269,8 +274,9 @@ export default function Payslips() {
         <div className="flex gap-2">
           {selected && (
             <>
+              <button className="btn-secondary" onClick={() => navigate(`/employees/${selected.id}/payslip/${encodeURIComponent(period)}`)}><Eye size={14} /> Open &amp; Edit</button>
               <button className="btn-secondary" onClick={handlePrint}><Printer size={14} /> Print</button>
-              <button className="btn-primary"><Download size={14} /> Download PDF</button>
+              <button className="btn-primary" onClick={() => downloadPayslipPDF(selected.payroll, selected, period, COMPANY_INFO)}><Download size={14} /> Download PDF</button>
             </>
           )}
         </div>

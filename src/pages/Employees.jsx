@@ -1,10 +1,13 @@
 import React, { useState, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Search, Plus, Filter, ChevronDown, Eye, Edit2,
   Download, Users, Mail, Phone, Building2, X,
   CheckCircle, AlertCircle, Clock,
 } from 'lucide-react'
-import { employees, departments } from '../data/employees.js'
+import { departments } from '../data/employees.js'
+import { usePayroll } from '../store/PayrollProvider.jsx'
+import { downloadCSV } from '../utils/download.js'
 import { formatNAD } from '../utils/namibianTax.js'
 
 function StatusBadge({ status }) {
@@ -196,12 +199,30 @@ function EmployeeModal({ employee, onClose }) {
 }
 
 export default function Employees() {
+  const navigate = useNavigate()
+  const { employees } = usePayroll()
   const [search, setSearch] = useState('')
   const [deptFilter, setDeptFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')
   const [selected, setSelected] = useState(null)
   const [sortField, setSortField] = useState('lastName')
   const [sortDir, setSortDir] = useState('asc')
+
+  function exportCSV(list) {
+    downloadCSV(list.map(e => ({
+      'Employee No': e.id,
+      'First Name': e.firstName,
+      'Last Name': e.lastName,
+      Department: e.department,
+      'Job Title': e.jobTitle,
+      'Employment Type': e.employmentType,
+      'Basic Salary': e.basicSalary,
+      Gross: e.payroll.grossSalary,
+      PAYE: e.payroll.paye,
+      'Net Pay': e.payroll.netPay,
+      Status: e.status,
+    })), 'Employee_Listing.csv')
+  }
 
   const filtered = useMemo(() => {
     let list = [...employees]
@@ -223,7 +244,7 @@ export default function Employees() {
       return sortDir === 'asc' ? cmp : -cmp
     })
     return list
-  }, [search, deptFilter, statusFilter, sortField, sortDir])
+  }, [employees, search, deptFilter, statusFilter, sortField, sortDir])
 
   const totalGross = filtered.reduce((s, e) => s + e.payroll.grossSalary, 0)
   const totalNet = filtered.reduce((s, e) => s + e.payroll.netPay, 0)
@@ -304,8 +325,7 @@ export default function Employees() {
             </div>
           </div>
           <div className="flex gap-2 shrink-0">
-            <button className="btn-secondary"><Download size={14} /> Export</button>
-            <button className="btn-primary"><Plus size={14} /> Add Employee</button>
+            <button className="btn-secondary" onClick={() => exportCSV(filtered)}><Download size={14} /> Export CSV</button>
           </div>
         </div>
       </div>
@@ -335,7 +355,11 @@ export default function Employees() {
             </thead>
             <tbody className="divide-y divide-cream-100">
               {filtered.map(emp => (
-                <tr key={emp.id} className="hover:bg-cream-50 transition-colors">
+                <tr
+                  key={emp.id}
+                  className="hover:bg-cream-50 transition-colors cursor-pointer"
+                  onClick={() => navigate(`/employees/${emp.id}`)}
+                >
                   <td className="table-cell">
                     <div className="flex items-center gap-3">
                       <div className="w-9 h-9 bg-navy-900 rounded-full flex items-center justify-center shrink-0">
@@ -372,13 +396,17 @@ export default function Employees() {
                   <td className="table-cell text-right">
                     <div className="flex items-center justify-end gap-1">
                       <button
-                        onClick={() => setSelected(emp)}
+                        onClick={e => { e.stopPropagation(); setSelected(emp) }}
                         className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors"
-                        title="View Details"
+                        title="Quick view"
                       >
                         <Eye size={15} />
                       </button>
-                      <button className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors" title="Edit">
+                      <button
+                        onClick={e => { e.stopPropagation(); navigate(`/employees/${emp.id}`) }}
+                        className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors"
+                        title="Open full profile"
+                      >
                         <Edit2 size={15} />
                       </button>
                     </div>
