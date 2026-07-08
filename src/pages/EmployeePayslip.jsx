@@ -95,10 +95,10 @@ export default function EmployeePayslip() {
               <div>
                 <div className="flex items-center gap-3 mb-1">
                   <div className="w-10 h-10 bg-gold-400 rounded-lg flex items-center justify-center">
-                    <span className="text-navy-900 font-black text-lg">P</span>
+                    <span className="text-navy-900 font-black text-lg">B</span>
                   </div>
                   <div>
-                    <div className="text-cream-100 font-bold text-lg leading-tight">PayFuta</div>
+                    <div className="text-cream-100 font-bold text-lg leading-tight">BluvoPay</div>
                     <div className="text-navy-400 text-xs">Payroll System</div>
                   </div>
                 </div>

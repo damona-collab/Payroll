@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# One-command PayFuta install for Linux desktops.
-# Builds the app with Docker, installs it, and puts a PayFuta shortcut on your Desktop.
+# One-command BluvoPay install for Linux desktops.
+# Builds the app with Docker, installs it, and puts a BluvoPay shortcut on your Desktop.
 #
-#   ./install-payfuta.sh
+#   ./install-bluvopay.sh
 set -e
 cd "$(dirname "$0")"
 
@@ -17,9 +17,9 @@ if [ -z "$DEB" ]; then
   exit 1
 fi
 
-# 2. Install (adds PayFuta to the application menu with its icon)
+# 2. Install (adds BluvoPay to the application menu with its icon)
 echo
-echo "==> Installing PayFuta (you may be asked for your password)..."
+echo "==> Installing BluvoPay (you may be asked for your password)..."
 if command -v apt >/dev/null 2>&1; then
   sudo apt install -y "./$DEB"
 else
@@ -28,10 +28,10 @@ fi
 
 # 3. Desktop shortcut
 DESKTOP_DIR="$(xdg-user-dir DESKTOP 2>/dev/null || echo "$HOME/Desktop")"
-ENTRY=/usr/share/applications/payfuta.desktop
+ENTRY=/usr/share/applications/bluvopay.desktop
 # electron-builder names the entry after the executable if different — find it
 if [ ! -f "$ENTRY" ]; then
-  ENTRY=$(grep -l "PayFuta" /usr/share/applications/*.desktop 2>/dev/null | head -1)
+  ENTRY=$(grep -l "BluvoPay" /usr/share/applications/*.desktop 2>/dev/null | head -1)
 fi
 
 if [ -n "$ENTRY" ] && [ -d "$DESKTOP_DIR" ]; then
@@ -44,8 +44,8 @@ if [ -n "$ENTRY" ] && [ -d "$DESKTOP_DIR" ]; then
   echo "==> Desktop shortcut created: $DESKTOP_DIR/$BASENAME"
 else
   echo
-  echo "==> PayFuta installed. Find it in your application menu (shortcut copy skipped)."
+  echo "==> BluvoPay installed. Find it in your application menu (shortcut copy skipped)."
 fi
 
 echo
-echo "All done! Launch PayFuta from the desktop shortcut or your application menu."
+echo "All done! Launch BluvoPay from the desktop shortcut or your application menu."

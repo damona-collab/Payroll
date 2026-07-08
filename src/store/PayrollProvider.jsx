@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState, useCallback } fr
 import { employees as SEED, TAX_YEAR_PERIODS, generateMonthlyHistory } from '../data/employees.js'
 import { calculatePayroll } from '../utils/namibianTax.js'
 
-const STORAGE_KEY = 'payfuta.state.v1'
+const STORAGE_KEY = 'bluvopay.state.v1'
 
 const PayrollContext = createContext(null)
 

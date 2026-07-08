@@ -1,4 +1,4 @@
-# PayFuta — Namibian Payroll System
+# BluvoPay — Namibian Payroll System
 
 A clean, modern payroll application built for Namibian businesses, fully aligned with the **Labour Act 11 of 2007** and the **NamRA tax tables (2026/2027)**. Styled with a navy blue and cream colour scheme inspired by PaySpace.
 
@@ -71,15 +71,15 @@ npm run build    # production build
 
 ## Desktop App (Recommended)
 
-PayFuta ships as a proper installable desktop application (Electron). Build the installer once, then install it like any other program — it gets its own icon, Start Menu entry, and desktop shortcut automatically.
+BluvoPay ships as a proper installable desktop application (Electron). Build the installer once, then install it like any other program — it gets its own icon, Start Menu entry, and desktop shortcut automatically.
 
 **One command on a Linux desktop (Docker required, no Node.js needed):**
 
 ```bash
-./install-payfuta.sh
+./install-bluvopay.sh
 ```
 
-This builds the app, installs it, adds **PayFuta to your application menu**, and puts a **PayFuta shortcut on your Desktop** automatically.
+This builds the app, installs it, adds **BluvoPay to your application menu**, and puts a **BluvoPay shortcut on your Desktop** automatically.
 
 **Or build only (without installing):**
 
@@ -93,9 +93,9 @@ sudo apt install ./release/namibia-payroll_1.0.0_amd64.deb
 
 ```bash
 npm install          # one-time setup
-npm run dist:win     # Windows → release/PayFuta Setup 1.0.0.exe
-npm run dist:mac     # macOS   → release/PayFuta-1.0.0.dmg
-npm run dist:linux   # Linux   → release/PayFuta-1.0.0.AppImage + .deb
+npm run dist:win     # Windows → release/BluvoPay Setup 1.0.0.exe
+npm run dist:mac     # macOS   → release/BluvoPay-1.0.0.dmg
+npm run dist:linux   # Linux   → release/BluvoPay-1.0.0.AppImage + .deb
 ```
 
 Run the installer from the `release/` folder. On Windows the setup wizard creates a **desktop shortcut** and Start Menu entry for you.
@@ -111,9 +111,9 @@ npm run app          # terminal 2 — Electron window
 
 If you prefer not to install anything, double-click launchers are also included:
 
-- **Windows** — right-click `Launch PayFuta.bat` → *Send to* → *Desktop (create shortcut)*. Double-clicking installs dependencies on first run, starts the app, and opens your browser.
-- **macOS** — duplicate `launch-payfuta.sh` as `launch-payfuta.command` (`cp launch-payfuta.sh launch-payfuta.command && chmod +x launch-payfuta.command`), then drag it to the Dock or make an alias on the Desktop.
-- **Linux** — copy `payfuta.desktop` to `~/Desktop/` (or `~/.local/share/applications/`), edit the `Exec=` path to your clone location, and mark it executable/trusted.
+- **Windows** — right-click `Launch BluvoPay.bat` → *Send to* → *Desktop (create shortcut)*. Double-clicking installs dependencies on first run, starts the app, and opens your browser.
+- **macOS** — duplicate `launch-bluvopay.sh` as `launch-bluvopay.command` (`cp launch-bluvopay.sh launch-bluvopay.command && chmod +x launch-bluvopay.command`), then drag it to the Dock or make an alias on the Desktop.
+- **Linux** — copy `bluvopay.desktop` to `~/Desktop/` (or `~/.local/share/applications/`), edit the `Exec=` path to your clone location, and mark it executable/trusted.
 
 ## Tech Stack
 
@@ -147,7 +147,7 @@ src/
 
 electron/main.cjs           # Desktop shell (Electron)
 build/                      # App icons (PNG + ICO)
-PayFuta.html                # Single-file build (open in any browser)
+BluvoPay.html                # Single-file build (open in any browser)
 ```
 
 ## PaySpace-Style Mechanisms

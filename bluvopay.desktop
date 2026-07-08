@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=PayFuta
+Name=BluvoPay
 Comment=Namibian Payroll System
 # Adjust the path below to where you cloned the Payroll repository
-Exec=bash -c 'cd $HOME/Payroll && ./launch-payfuta.sh'
+Exec=bash -c 'cd $HOME/Payroll && ./launch-bluvopay.sh'
 Icon=$HOME/Payroll/public/favicon.svg
 Terminal=true
 Categories=Office;Finance;

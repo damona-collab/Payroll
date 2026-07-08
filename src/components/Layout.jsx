@@ -86,11 +86,11 @@ export default function Layout({ children }) {
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-5 border-b border-navy-800">
           <div className="shrink-0 w-9 h-9 bg-gold-400 rounded-lg flex items-center justify-center shadow-sm">
-            <span className="text-navy-900 font-black text-base">P</span>
+            <span className="text-navy-900 font-black text-base">B</span>
           </div>
           {!collapsed && (
             <div className="overflow-hidden">
-              <div className="text-cream-100 font-bold text-base leading-tight truncate">PayFuta</div>
+              <div className="text-cream-100 font-bold text-base leading-tight truncate">BluvoPay</div>
               <div className="text-navy-400 text-xs truncate">Payroll System</div>
             </div>
           )}
@@ -151,7 +151,7 @@ export default function Layout({ children }) {
 
           <div className="flex-1">
             <h1 className="text-lg font-semibold text-navy-900 leading-tight">
-              {currentPage?.label ?? 'PayFuta'}
+              {currentPage?.label ?? 'BluvoPay'}
             </h1>
             <p className="text-xs text-navy-400">Tax Year 2026/2027 &bull; {COMPANY_INFO.name}</p>
           </div>
