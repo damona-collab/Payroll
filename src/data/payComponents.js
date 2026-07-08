@@ -64,6 +64,57 @@ export const FRINGE_BENEFITS = [
   { code: 'F005', name: 'Mortgage Subsidy',              calc: 'Employer-paid interest subsidy', paye: true },
 ]
 
+/**
+ * Report catalogue — categorised, described reports modelled on the PaySpace
+ * NextGen / Classic report library. `nextgen: true` marks reports available in
+ * the modern report engine; all are available in Classic.
+ */
+export const REPORT_CATALOG = [
+  // Payroll
+  { category: 'Payroll', name: 'Payroll Register', desc: 'Compact view of employees’ payslips with multiple payslips per page.', nextgen: true, format: ['PDF', 'Excel'] },
+  { category: 'Payroll', name: 'Payroll Reconciliation', desc: 'Reconciliation of a chosen period’s payslip values against the prior run.', nextgen: true, format: ['PDF', 'Excel'] },
+  { category: 'Payroll', name: 'Payslips', desc: 'Individual payslips for a chosen run, per employee.', nextgen: true, format: ['PDF'] },
+  { category: 'Payroll', name: 'Bank Net Pay Listing', desc: 'Bank payment file listing of net pay for salary transfers.', nextgen: true, format: ['Excel', 'CSV'] },
+  { category: 'Payroll', name: 'Component Variance', desc: 'Compares all input captured between two selected runs.', nextgen: true, format: ['Excel'] },
+  { category: 'Payroll', name: 'Cost To Company Report', desc: 'Full cost-to-company breakdown per employee including employer contributions.', nextgen: true, format: ['PDF', 'Excel'] },
+  { category: 'Payroll', name: 'Consolidated Payroll Reconciliation', desc: 'Month-to-date figures of all components for selected companies in a group.', nextgen: true, format: ['Excel'] },
+  { category: 'Payroll', name: 'Loans Report', desc: 'Outstanding staff loan and electronics-loan balances with monthly recovery.', nextgen: true, format: ['Excel'] },
+  { category: 'Payroll', name: 'Pension & Provident Report', desc: 'Pension / provident fund contributions for a chosen period.', nextgen: true, format: ['Excel'] },
+  { category: 'Payroll', name: 'Medical Aid Schedule', desc: 'Medical aid contribution schedule per provider.', nextgen: true, format: ['Excel'] },
+  { category: 'Payroll', name: 'Arrears Report', desc: 'Listing of employee arrears amounts for a chosen run.', nextgen: false, format: ['PDF'] },
+  { category: 'Payroll', name: 'Garnishee Report', desc: 'Listing of employees’ garnishee orders for a chosen period.', nextgen: false, format: ['Excel'] },
+
+  // Statutory
+  { category: 'Statutory', name: 'NamRA PAYE Return', desc: 'Employee tax schedule for the monthly NamRA submission (due the 20th).', nextgen: true, format: ['PDF', 'Excel'] },
+  { category: 'Statutory', name: 'SSC Contribution Report', desc: 'Social Security employee + employer contributions per employee.', nextgen: true, format: ['Excel'] },
+  { category: 'Statutory', name: 'VET Levy Report', desc: 'Vocational Education & Training levy summary for the NTA.', nextgen: true, format: ['Excel'] },
+  { category: 'Statutory', name: 'Workmen’s Compensation Declaration', desc: 'Annual WC earnings declaration and assessment.', nextgen: true, format: ['PDF', 'Excel'] },
+  { category: 'Statutory', name: 'Tax Certificates (ITAS)', desc: 'Annual employee tax certificates for ITAS submission.', nextgen: true, format: ['PDF'] },
+  { category: 'Statutory', name: 'Annual PAYE Reconciliation', desc: 'Year-end PAYE reconciliation to NamRA.', nextgen: true, format: ['Excel'] },
+
+  // Human Resources
+  { category: 'Human Resources', name: 'Employee Listing', desc: 'Listing of all employees with core master-data fields.', nextgen: true, format: ['Excel'] },
+  { category: 'Human Resources', name: 'Dynamic Employee Details', desc: 'Selectable pre-defined employee fields for a custom extract.', nextgen: true, format: ['Excel'] },
+  { category: 'Human Resources', name: 'Dependants Listing', desc: 'Listing of dependants with their details.', nextgen: true, format: ['Excel'] },
+  { category: 'Human Resources', name: 'New Engagements and Terminations', desc: 'Employees engaged or terminated within a chosen period.', nextgen: true, format: ['Excel'] },
+  { category: 'Human Resources', name: 'Employee Suspension', desc: 'Listing of all suspended employees as at a chosen date.', nextgen: false, format: ['Excel'] },
+
+  // Leave
+  { category: 'Leave', name: 'Leave Balances', desc: 'Employees’ leave balances for a chosen period.', nextgen: true, format: ['Excel'] },
+  { category: 'Leave', name: 'Leave Transactions', desc: 'All leave transactions for a specified period.', nextgen: true, format: ['Excel'] },
+  { category: 'Leave', name: 'Leave Liability Report', desc: 'Accrued leave provision for the financial statements.', nextgen: true, format: ['Excel'] },
+
+  // Costing
+  { category: 'Costing', name: 'Costing by Cost Centre', desc: 'Payroll cost split by cost centre and department.', nextgen: true, format: ['Excel'] },
+  { category: 'Costing', name: 'Project Costing Report', desc: 'All figures posted to an org unit, project and activity per employee.', nextgen: true, format: ['Excel'] },
+
+  // Audit
+  { category: 'Audit', name: 'Audit Trail Report', desc: 'All audit-trail results for chosen parameters.', nextgen: true, format: ['Excel'] },
+  { category: 'Audit', name: 'Payroll Audit Support Pack', desc: 'Change logs, approvals and audit-trail extracts for auditors.', nextgen: true, format: ['PDF', 'Excel'] },
+]
+
+export const REPORT_CATEGORIES = [...new Set(REPORT_CATALOG.map(r => r.category))]
+
 /** Namibian public holidays (section H) — national calendar */
 export const PUBLIC_HOLIDAYS_2025 = [
   { date: '2025-01-01', name: "New Year's Day" },

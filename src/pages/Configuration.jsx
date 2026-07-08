@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import {
   Settings, Check, X, Shield, Percent, Landmark,
-  Gift, MinusCircle, PlusCircle, CalendarDays, Lock,
+  Gift, MinusCircle, PlusCircle, CalendarDays, Lock, Building2,
 } from 'lucide-react'
 import {
   EARNINGS, ALLOWANCES, DEDUCTIONS, EMPLOYER_CONTRIBUTIONS,
   FRINGE_BENEFITS, PUBLIC_HOLIDAYS_2025,
 } from '../data/payComponents.js'
+import { COMPANY_INFO } from '../data/employees.js'
 import {
   SSC_RATE, SSC_MAX_MONTHLY, SSC_CEILING, VET_RATE,
   WC_RATE, WC_EARNINGS_CEILING_ANNUAL, formatNAD,
@@ -25,6 +26,7 @@ function AllocationBadge({ value }) {
 }
 
 const TABS = [
+  { id: 'company',     label: 'Company',         icon: Building2 },
   { id: 'earnings',    label: 'Earnings',        icon: PlusCircle },
   { id: 'allowances',  label: 'Allowances',      icon: Gift },
   { id: 'deductions',  label: 'Deductions',      icon: MinusCircle },
@@ -34,8 +36,18 @@ const TABS = [
   { id: 'holidays',    label: 'Public Holidays', icon: CalendarDays },
 ]
 
+// Read-only field display used on the Company tab
+function Field({ label, value, required }) {
+  return (
+    <div className="bg-cream-100 rounded-xl p-3">
+      <div className="label">{label}{required && <span className="text-red-500 ml-0.5">*</span>}</div>
+      <div className="text-sm font-medium text-navy-900 truncate">{value || '—'}</div>
+    </div>
+  )
+}
+
 export default function Configuration() {
-  const [tab, setTab] = useState('earnings')
+  const [tab, setTab] = useState('company')
 
   return (
     <div className="space-y-5">
@@ -64,6 +76,93 @@ export default function Configuration() {
           </button>
         ))}
       </div>
+
+      {/* Company — Basic Company Information */}
+      {tab === 'company' && (
+        <div className="space-y-4">
+          <div className="card overflow-hidden">
+            <div className="px-5 py-3 border-b border-cream-200 bg-cream-50 flex items-center gap-2">
+              <Building2 size={15} className="text-navy-600" />
+              <span className="text-sm font-semibold text-navy-900">Company Details</span>
+            </div>
+            <div className="p-5 grid grid-cols-2 md:grid-cols-3 gap-4">
+              <Field label="Company Name" value={COMPANY_INFO.name} required />
+              <Field label="Trading Name" value={COMPANY_INFO.name} />
+              <Field label="Registration Number" value={COMPANY_INFO.registrationNumber} required />
+              <Field label="Tax Authority" value="Namibia (NamRA)" required />
+              <Field label="Tax Number" value={COMPANY_INFO.taxNumber} required />
+              <Field label="VAT Number" value={COMPANY_INFO.vatNumber} />
+              <Field label="Financial Year End" value="February" />
+              <Field label="Pay Frequency" value={COMPANY_INFO.payPeriod} />
+              <Field label="Pay Date" value={`${COMPANY_INFO.payDate}th of month`} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Statutory registration */}
+            <div className="card overflow-hidden">
+              <div className="px-5 py-3 border-b border-cream-200 bg-cream-50 flex items-center gap-2">
+                <Shield size={15} className="text-navy-600" />
+                <span className="text-sm font-semibold text-navy-900">Statutory Registration</span>
+              </div>
+              <div className="p-5 grid grid-cols-2 gap-4">
+                <Field label="Employer SSC Number" value={COMPANY_INFO.sscEmployerNumber} required />
+                <Field label="Employer VET Levy Number" value="Exempt (< N$1m payroll)" />
+                <Field label="WC Employer Sector" value="Info & Communication Technology" />
+                <Field label="WC Voluntary Cover" value="No" />
+                <Field label="Show emp. no. on ITAS" value="Yes" />
+                <Field label="SSC After Termination" value="Calculate" />
+              </div>
+            </div>
+
+            {/* Address + contact */}
+            <div className="card overflow-hidden">
+              <div className="px-5 py-3 border-b border-cream-200 bg-cream-50 flex items-center gap-2">
+                <Landmark size={15} className="text-navy-600" />
+                <span className="text-sm font-semibold text-navy-900">Address &amp; Contact</span>
+              </div>
+              <div className="p-5 grid grid-cols-2 gap-4">
+                <div className="col-span-2"><Field label="Physical Address" value={COMPANY_INFO.address} /></div>
+                <Field label="City" value="Windhoek" />
+                <Field label="Province" value="Khomas" />
+                <Field label="Telephone" value={COMPANY_INFO.phone} />
+                <Field label="Email" value={COMPANY_INFO.email} />
+              </div>
+            </div>
+          </div>
+
+          {/* Theme */}
+          <div className="card overflow-hidden">
+            <div className="px-5 py-3 border-b border-cream-200 bg-cream-50 flex items-center gap-2">
+              <Percent size={15} className="text-navy-600" />
+              <span className="text-sm font-semibold text-navy-900">Company Theme</span>
+            </div>
+            <div className="p-5 flex flex-wrap items-center gap-6">
+              <div className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-navy-900 border border-cream-300" />
+                <div className="text-sm">
+                  <div className="text-navy-900 font-medium">Primary Colour</div>
+                  <div className="text-navy-400 text-xs font-mono">#0f2557 Navy</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-gold-400 border border-cream-300" />
+                <div className="text-sm">
+                  <div className="text-navy-900 font-medium">Accent Colour</div>
+                  <div className="text-navy-400 text-xs font-mono">#d4a843 Gold</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-lg bg-cream-100 border border-cream-300" />
+                <div className="text-sm">
+                  <div className="text-navy-900 font-medium">Background</div>
+                  <div className="text-navy-400 text-xs font-mono">#faf6ef Cream</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Earnings & Allowances share the flag-table layout */}
       {(tab === 'earnings' || tab === 'allowances') && (

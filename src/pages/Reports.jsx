@@ -1,14 +1,20 @@
 import React, { useState } from 'react'
 import {
   BarChart3, Download, FileText, TrendingUp, Users,
-  CreditCard, Building2, Calendar,
+  CreditCard, Building2, Calendar, Search, Eye, Folder,
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, LineChart, Line, Legend,
 } from 'recharts'
 import { employees, COMPANY_INFO } from '../data/employees.js'
+import { REPORT_CATALOG, REPORT_CATEGORIES } from '../data/payComponents.js'
 import { formatNAD } from '../utils/namibianTax.js'
+
+const CATEGORY_ICON = {
+  Payroll: CreditCard, Statutory: FileText, 'Human Resources': Users,
+  Leave: Calendar, Costing: BarChart3, Audit: Folder,
+}
 
 const MONTHS = ['Jul 24', 'Aug 24', 'Sep 24', 'Oct 24', 'Nov 24', 'Dec 24', 'Jan 25', 'Feb 25', 'Mar 25', 'Apr 25']
 
@@ -37,22 +43,95 @@ const deptData = Object.entries(
   }, {})
 ).map(([dept, d]) => ({ dept, ...d }))
 
-const REPORT_TYPES = [
-  // Monthly reports (config section K)
-  { id: 'payroll-register', label: 'Payroll Register', icon: Users, desc: 'Full register with all earnings, deductions, and employer contributions', group: 'Monthly' },
-  { id: 'bank-listing', label: 'Bank Net Pay Listing', icon: CreditCard, desc: 'Bank payment file listing for salary transfers', group: 'Monthly' },
-  { id: 'paye-report', label: 'NamRA PAYE Return', icon: FileText, desc: 'Employee tax schedule for NamRA submission (due 20th)', group: 'Monthly' },
-  { id: 'ssc-report', label: 'SSC Contribution Report', icon: Building2, desc: 'EE + ER contributions per employee for the period', group: 'Monthly' },
-  { id: 'pension-medical', label: 'Pension & Medical Schedules', icon: FileText, desc: 'Fund contribution schedules per provider', group: 'Monthly' },
-  { id: 'cost-centre', label: 'Costing by Cost Centre', icon: BarChart3, desc: 'Payroll cost split by cost centre and department', group: 'Monthly' },
-  // Annual reports
-  { id: 'tax-certificates', label: 'Tax Certificates (ITAS)', icon: FileText, desc: 'Annual employee tax certificates for ITAS submission', group: 'Annual' },
-  { id: 'paye-recon', label: 'Annual PAYE Reconciliation', icon: FileText, desc: 'Year-end PAYE reconciliation to NamRA', group: 'Annual' },
-  { id: 'wc-declaration', label: "Workmen's Compensation Declaration", icon: Building2, desc: 'Annual WC earnings declaration and assessment', group: 'Annual' },
-  { id: 'leave-liability', label: 'Leave Liability Report', icon: Calendar, desc: 'Accrued leave provision for financial statements', group: 'Annual' },
-  { id: 'vet-report', label: 'VET Levy Report', icon: BarChart3, desc: 'Vocational Education & Training levy summary (NTA)', group: 'Annual' },
-  { id: 'audit-pack', label: 'Payroll Audit Support Pack', icon: FileText, desc: 'Change logs, approvals, and audit trail extracts', group: 'Annual' },
-]
+function ReportLibrary() {
+  const [engine, setEngine] = useState('NextGen')
+  const [category, setCategory] = useState('All')
+  const [query, setQuery] = useState('')
+
+  const filtered = REPORT_CATALOG.filter(r => {
+    if (engine === 'NextGen' && !r.nextgen) return false
+    if (category !== 'All' && r.category !== category) return false
+    if (query && !`${r.name} ${r.desc}`.toLowerCase().includes(query.toLowerCase())) return false
+    return true
+  })
+  const grouped = REPORT_CATEGORIES
+    .map(cat => ({ cat, items: filtered.filter(r => r.category === cat) }))
+    .filter(g => g.items.length)
+
+  return (
+    <div className="card p-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+        <div className="text-sm font-semibold text-navy-900 flex items-center gap-2">
+          <Download size={15} className="text-navy-600" /> Report Library
+        </div>
+        <div className="flex flex-wrap gap-2 items-center">
+          {/* Engine tabs */}
+          <div className="flex bg-cream-100 rounded-lg p-0.5 border border-cream-200">
+            {['NextGen', 'Classic'].map(e => (
+              <button key={e} onClick={() => setEngine(e)}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                  engine === e ? 'bg-navy-900 text-cream-100' : 'text-navy-600'}`}>
+                {e}
+              </button>
+            ))}
+          </div>
+          {/* Category */}
+          <select className="select w-auto text-sm" value={category} onChange={e => setCategory(e.target.value)}>
+            <option value="All">All Categories</option>
+            {REPORT_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          {/* Search */}
+          <div className="flex items-center gap-2 bg-cream-100 border border-cream-200 rounded-lg px-3 py-2 w-52">
+            <Search size={13} className="text-navy-400 shrink-0" />
+            <input className="bg-transparent text-sm text-navy-700 placeholder-navy-400 outline-none flex-1"
+              placeholder="Search reports..." value={query} onChange={e => setQuery(e.target.value)} />
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-5">
+        {grouped.map(({ cat, items }) => {
+          const Icon = CATEGORY_ICON[cat] || FileText
+          return (
+            <div key={cat}>
+              <div className="flex items-center gap-2 mb-2">
+                <Icon size={14} className="text-navy-500" />
+                <span className="text-xs font-bold text-navy-500 uppercase tracking-wider">{cat}</span>
+                <span className="text-xs text-navy-300">({items.length})</span>
+              </div>
+              <div className="divide-y divide-cream-100 border border-cream-200 rounded-xl overflow-hidden">
+                {items.map(r => (
+                  <div key={r.name} className="flex items-center gap-3 px-4 py-2.5 hover:bg-cream-50 transition-colors group">
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-navy-900">{r.name}</div>
+                      <div className="text-xs text-navy-400 truncate">{r.desc}</div>
+                    </div>
+                    <div className="flex gap-1 shrink-0">
+                      {r.format.map(f => (
+                        <span key={f} className="text-[10px] font-mono text-navy-400 bg-cream-100 px-1.5 py-0.5 rounded">{f}</span>
+                      ))}
+                    </div>
+                    <div className="flex gap-1 shrink-0">
+                      <button className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors" title="Preview">
+                        <Eye size={15} />
+                      </button>
+                      <button className="p-1.5 text-navy-400 hover:text-navy-700 hover:bg-cream-100 rounded-lg transition-colors" title="Download">
+                        <Download size={15} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+        {grouped.length === 0 && (
+          <div className="text-center py-10 text-navy-400 text-sm">No reports match your filters.</div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
@@ -203,38 +282,8 @@ export default function Reports() {
         </div>
       </div>
 
-      {/* Report downloads */}
-      <div className="card p-5">
-        <div className="text-sm font-semibold text-navy-900 mb-4 flex items-center gap-2">
-          <Download size={15} className="text-navy-600" />
-          Generate Reports — {period}
-        </div>
-        {['Monthly', 'Annual'].map(group => (
-          <div key={group} className="mb-5 last:mb-0">
-            <div className="text-xs font-bold text-navy-500 uppercase tracking-wider mb-2">
-              {group} Reports
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {REPORT_TYPES.filter(r => r.group === group).map(r => (
-                <button
-                  key={r.id}
-                  className="flex items-start gap-3 p-4 rounded-xl border border-cream-200 bg-cream-50
-                             hover:bg-navy-900 hover:border-navy-900 hover:text-cream-100 transition-all duration-150 group text-left"
-                >
-                  <div className="w-9 h-9 bg-navy-100 group-hover:bg-white/10 rounded-lg flex items-center justify-center shrink-0 transition-colors">
-                    <r.icon size={16} className="text-navy-600 group-hover:text-cream-100 transition-colors" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-semibold text-navy-900 group-hover:text-cream-100 transition-colors">{r.label}</div>
-                    <div className="text-xs text-navy-400 group-hover:text-navy-300 transition-colors mt-0.5 leading-tight">{r.desc}</div>
-                  </div>
-                  <Download size={14} className="text-navy-300 shrink-0 mt-0.5 group-hover:text-gold-400 transition-colors" />
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      {/* Report library — categorised, searchable (PaySpace NextGen/Classic) */}
+      <ReportLibrary />
     </div>
   )
 }
