@@ -129,17 +129,34 @@ If you prefer not to install anything, double-click launchers are also included:
 src/
 ├── App.jsx                 # Routes
 ├── components/Layout.jsx   # Sidebar + topbar shell
-├── data/employees.js       # Sample employee data + company info
+├── data/
+│   ├── employees.js        # Sample employees, company info, monthly history
+│   └── payComponents.js    # Pay component catalog + public holidays
 ├── pages/
 │   ├── Dashboard.jsx
 │   ├── Employees.jsx
-│   ├── PayrollRun.jsx
-│   ├── Payslips.jsx
+│   ├── PayrollRun.jsx      # 4-step run with pre-payroll validation
+│   ├── Payslips.jsx        # Printable payslip + income perspectives
+│   ├── ComparePayslips.jsx # Side-by-side periods with Difference column
+│   ├── TaxDrilldown.jsx    # YTD + monthly hierarchical tax drilldown
 │   ├── LeaveManagement.jsx
 │   ├── TaxCalculator.jsx
-│   └── Reports.jsx
-└── utils/namibianTax.js    # PAYE / SSC / VET / leave calculation engine
+│   ├── Reports.jsx
+│   └── Configuration.jsx   # Component flags, statutory rates, holidays
+└── utils/namibianTax.js    # PAYE / SSC / WC / VET / income-stream engine
+
+electron/main.cjs           # Desktop shell (Electron)
+build/                      # App icons (PNG + ICO)
+PayFuta.html                # Single-file build (open in any browser)
 ```
+
+## PaySpace-Style Mechanisms
+
+Modelled on the client's PaySpace configuration:
+
+- **Income perspectives** — every payslip resolves earnings into Gross Income, Social Security Income, Taxable Income, Total Allowable, True Taxable Income, Workmen's Comp Income (capped + uncapped), and VET Levy Income, each with a tax code. PAYE is levied on True Taxable Income.
+- **Employee Tax Drilldown** — expandable Earning / Gross / Deduction / Company Contribution / Information totals with a YTD column and one column per period.
+- **Compare Payslips** — side-by-side period columns with a Difference column.
 
 ## Disclaimer
 
