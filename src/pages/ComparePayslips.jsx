@@ -26,8 +26,8 @@ const LINES = [
 
 export default function ComparePayslips() {
   const [empId, setEmpId] = useState(employees[0].id)
-  const [periodA, setPeriodA] = useState('June 2025')
-  const [periodB, setPeriodB] = useState('February 2026')
+  const [periodA, setPeriodA] = useState('June 2026')
+  const [periodB, setPeriodB] = useState('July 2026')
   const [search, setSearch] = useState('')
 
   const employee = employees.find(e => e.id === empId)
@@ -36,7 +36,7 @@ export default function ComparePayslips() {
   )
 
   const { calcA, calcB } = useMemo(() => {
-    const history = generateMonthlyHistory(employee, 'February 2026')
+    const history = generateMonthlyHistory(employee, 'July 2026')
     const find = p => history.find(h => h.period === p)?.calc
     return { calcA: find(periodA), calcB: find(periodB) }
   }, [employee, periodA, periodB])

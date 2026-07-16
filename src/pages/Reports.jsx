@@ -19,7 +19,7 @@ const CATEGORY_ICON = {
   Leave: Calendar, Costing: BarChart3, Audit: Folder,
 }
 
-const MONTHS = ['Jul 24', 'Aug 24', 'Sep 24', 'Oct 24', 'Nov 24', 'Dec 24', 'Jan 25', 'Feb 25', 'Mar 25', 'Apr 25']
+const MONTHS = ['Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'May 26', 'Jun 26', 'Jul 26']
 
 const totalGross = employees.reduce((s, e) => s + e.payroll.grossSalary, 0)
 const totalPAYE  = employees.reduce((s, e) => s + e.payroll.paye, 0)
@@ -217,7 +217,7 @@ function CustomTooltip({ active, payload, label }) {
 }
 
 export default function Reports() {
-  const [period, setPeriod] = useState('April 2025')
+  const [period, setPeriod] = useState('July 2026')
 
   return (
     <div className="space-y-5">
@@ -233,7 +233,7 @@ export default function Reports() {
             value={period}
             onChange={e => setPeriod(e.target.value)}
           >
-            {['April 2025', 'March 2025', 'February 2025', 'January 2025', 'Q3 2024/25', 'Full Year 2024/25']
+            {['July 2026', 'June 2026', 'May 2026', 'April 2026', 'Q1 2026/27', 'Full Year 2026/27']
               .map(p => <option key={p} value={p}>{p}</option>)}
           </select>
         </div>
@@ -266,7 +266,7 @@ export default function Reports() {
         <div className="card p-5">
           <div className="text-sm font-semibold text-navy-900 mb-4 flex items-center gap-2">
             <TrendingUp size={15} className="text-navy-600" />
-            Payroll Trend — Jul 2024 to Apr 2025
+            Payroll Trend — Oct 2025 to Jul 2026
           </div>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={trendData}>

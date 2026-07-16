@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import { employees } from '../data/employees.js'
 import { LEAVE_ENTITLEMENTS, OVERTIME, NOTICE_PERIODS } from '../utils/namibianTax.js'
-import { PUBLIC_HOLIDAYS_2025 } from '../data/payComponents.js'
+import { PUBLIC_HOLIDAYS_2026 } from '../data/payComponents.js'
 
 const LEAVE_TYPES = ['Annual Leave', 'Sick Leave', 'Family Responsibility', 'Maternity Leave', 'Unpaid Leave']
 const STATUS_OPTIONS = ['All', 'Pending', 'Approved', 'Declined']
@@ -14,33 +14,33 @@ const STATUS_OPTIONS = ['All', 'Pending', 'Approved', 'Declined']
 const MOCK_APPLICATIONS = [
   {
     id: 'LA001', empId: 'EMP008', type: 'Annual Leave',
-    from: '2025-04-07', to: '2025-04-18', days: 10,
+    from: '2026-07-07', to: '2026-07-18', days: 10,
     status: 'Approved', reason: 'Family vacation', approver: 'Selma Nangolo',
-    applied: '2025-03-20',
+    applied: '2026-06-20',
   },
   {
     id: 'LA002', empId: 'EMP003', type: 'Sick Leave',
-    from: '2025-04-10', to: '2025-04-11', days: 2,
+    from: '2026-07-10', to: '2026-07-11', days: 2,
     status: 'Approved', reason: 'Flu and doctor visit', approver: 'Selma Nangolo',
-    applied: '2025-04-10',
+    applied: '2026-07-10',
   },
   {
     id: 'LA003', empId: 'EMP006', type: 'Annual Leave',
-    from: '2025-04-28', to: '2025-04-30', days: 3,
+    from: '2026-07-28', to: '2026-07-30', days: 3,
     status: 'Pending', reason: 'Personal matters', approver: null,
-    applied: '2025-04-13',
+    applied: '2026-07-13',
   },
   {
     id: 'LA004', empId: 'EMP004', type: 'Family Responsibility',
-    from: '2025-04-14', to: '2025-04-14', days: 1,
+    from: '2026-07-14', to: '2026-07-14', days: 1,
     status: 'Approved', reason: 'Child school event', approver: 'Maria Nghifikwa',
-    applied: '2025-04-12',
+    applied: '2026-07-12',
   },
   {
     id: 'LA005', empId: 'EMP001', type: 'Annual Leave',
-    from: '2025-05-05', to: '2025-05-09', days: 5,
+    from: '2026-08-05', to: '2026-08-09', days: 5,
     status: 'Pending', reason: 'Public holiday extension', approver: null,
-    applied: '2025-04-13',
+    applied: '2026-07-13',
   },
 ]
 
@@ -303,7 +303,7 @@ export default function LeaveManagement() {
         <div className="space-y-4">
           <div className="card overflow-hidden">
             <div className="px-5 py-3 border-b border-cream-200 bg-cream-50">
-              <div className="text-sm font-semibold text-navy-900">Employee Leave Balances — April 2025</div>
+              <div className="text-sm font-semibold text-navy-900">Employee Leave Balances — July 2026</div>
             </div>
             <div className="divide-y divide-cream-100">
               {employees.map(emp => (
@@ -352,8 +352,8 @@ export default function LeaveManagement() {
       {activeTab === 'holidays' && (
         <div className="card overflow-hidden">
           <div className="px-5 py-3 border-b border-cream-200 bg-cream-50 flex items-center justify-between">
-            <div className="text-sm font-semibold text-navy-900">Namibian Public Holidays — 2025</div>
-            <span className="badge badge-navy">{PUBLIC_HOLIDAYS_2025.length} days</span>
+            <div className="text-sm font-semibold text-navy-900">Namibian Public Holidays — 2026</div>
+            <span className="badge badge-navy">{PUBLIC_HOLIDAYS_2026.length} days</span>
           </div>
           <table className="w-full">
             <thead>
@@ -365,7 +365,7 @@ export default function LeaveManagement() {
               </tr>
             </thead>
             <tbody className="divide-y divide-cream-100">
-              {PUBLIC_HOLIDAYS_2025.map(h => {
+              {PUBLIC_HOLIDAYS_2026.map(h => {
                 const d = new Date(h.date + 'T00:00:00')
                 return (
                   <tr key={h.date + h.name} className="hover:bg-cream-50 transition-colors">

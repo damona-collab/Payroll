@@ -208,7 +208,7 @@ export default function EmployeeDetail() {
           {section === 'payslips' && (
             <div className="card overflow-hidden">
               <div className="px-5 py-3 border-b border-cream-200 bg-cream-50 text-sm font-semibold text-navy-900">
-                Payslips — Tax Year 2025/2026
+                Payslips — Tax Year 2026/2027
               </div>
               <div className="divide-y divide-cream-100">
                 {[...periods].reverse().map(period => (

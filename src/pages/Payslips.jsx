@@ -6,7 +6,7 @@ import { usePayroll } from '../store/PayrollProvider.jsx'
 import { formatNAD } from '../utils/namibianTax.js'
 import { downloadPayslipPDF } from '../utils/download.js'
 
-const PERIODS = ['April 2025', 'March 2025', 'February 2025', 'January 2025', 'December 2024']
+const PERIODS = ['July 2026', 'June 2026', 'May 2026', 'April 2026', 'March 2026']
 
 function PayslipDocument({ employee, period }) {
   if (!employee) return null

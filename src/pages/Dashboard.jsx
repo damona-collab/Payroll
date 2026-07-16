@@ -11,7 +11,7 @@ import {
 import { employees, COMPANY_INFO } from '../data/employees.js'
 import { formatNAD } from '../utils/namibianTax.js'
 
-const MONTHS = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr']
+const MONTHS = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
 
 const activeEmployees = employees.filter(e => e.status === 'Active')
 const totalGross = employees.reduce((s, e) => s + e.payroll.grossSalary, 0)
@@ -70,11 +70,11 @@ function KPICard({ icon: Icon, label, value, sub, trend, trendUp, color = 'navy'
 
 function RecentActivity() {
   const activities = [
-    { type: 'payroll', msg: 'March 2025 payroll processed', time: '2 hours ago', icon: FileCheck, color: 'text-emerald-600 bg-emerald-50' },
+    { type: 'payroll', msg: 'July 2026 payroll processed', time: '2 hours ago', icon: FileCheck, color: 'text-emerald-600 bg-emerald-50' },
     { type: 'employee', msg: 'Anna Shipanga added to Sales dept.', time: '1 day ago', icon: Users, color: 'text-navy-600 bg-navy-50' },
     { type: 'leave', msg: 'Frieda Gaoseb on approved leave', time: '2 days ago', icon: Calendar, color: 'text-amber-600 bg-amber-50' },
-    { type: 'tax', msg: 'PAYE submission due Apr 20', time: '7 days left', icon: AlertCircle, color: 'text-red-500 bg-red-50' },
-    { type: 'payroll', msg: 'February 2025 payslips generated', time: '1 month ago', icon: FileCheck, color: 'text-emerald-600 bg-emerald-50' },
+    { type: 'tax', msg: 'PAYE submission due Aug 20', time: '5 days left', icon: AlertCircle, color: 'text-red-500 bg-red-50' },
+    { type: 'payroll', msg: 'June 2026 payslips generated', time: '1 month ago', icon: FileCheck, color: 'text-emerald-600 bg-emerald-50' },
   ]
   return (
     <div className="card p-5">
@@ -125,7 +125,7 @@ function PieTooltip({ active, payload }) {
 }
 
 export default function Dashboard() {
-  const upcomingPayDate = `${COMPANY_INFO.payDate} April 2025`
+  const upcomingPayDate = `${COMPANY_INFO.payDate} July 2026`
 
   return (
     <div className="space-y-6">
@@ -133,7 +133,7 @@ export default function Dashboard() {
       <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
         <AlertCircle size={16} className="text-amber-600 shrink-0" />
         <span className="text-sm text-amber-800 font-medium">
-          PAYE submission deadline: <strong>20 April 2025</strong>. NamRA monthly return due.
+          PAYE submission deadline: <strong>20 August 2026</strong>. NamRA monthly return due.
         </span>
         <button className="ml-auto text-xs font-semibold text-amber-700 hover:text-amber-900 shrink-0 underline">
           View Details
@@ -184,7 +184,7 @@ export default function Dashboard() {
         <div className="card p-5 lg:col-span-2">
           <div className="section-title flex items-center gap-2">
             <TrendingUp size={16} className="text-navy-600" />
-            Payroll Trend (Jul 2024 – Apr 2025)
+            Payroll Trend (Oct 2025 – Jul 2026)
           </div>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={payrollTrend} barGap={4} barSize={12}>
@@ -242,7 +242,7 @@ export default function Dashboard() {
         <div className="card p-5 lg:col-span-2">
           <div className="section-title flex items-center gap-2">
             <CreditCard size={16} className="text-navy-600" />
-            Payroll Summary — April 2025
+            Payroll Summary — July 2026
           </div>
           <div className="space-y-2">
             {[
@@ -291,9 +291,9 @@ export default function Dashboard() {
             <div className="space-y-3">
               {[
                 { label: 'Pay Date', date: upcomingPayDate, tag: 'pay', color: 'badge-navy' },
-                { label: 'PAYE Due', date: '20 April 2025', tag: 'NamRA', color: 'badge-red' },
-                { label: 'SSC Due', date: '07 May 2025', tag: 'SSC', color: 'badge-yellow' },
-                { label: 'VET Levy', date: '20 April 2025', tag: 'NTA', color: 'badge-blue' },
+                { label: 'PAYE Due', date: '20 August 2026', tag: 'NamRA', color: 'badge-red' },
+                { label: 'SSC Due', date: '07 August 2026', tag: 'SSC', color: 'badge-yellow' },
+                { label: 'VET Levy', date: '20 August 2026', tag: 'NTA', color: 'badge-blue' },
               ].map((d, i) => (
                 <div key={i} className="flex items-center justify-between">
                   <div>

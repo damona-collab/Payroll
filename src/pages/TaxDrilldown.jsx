@@ -55,7 +55,7 @@ function GroupBlock({ group, periods, defaultOpen }) {
 
 export default function TaxDrilldown() {
   const [empId, setEmpId] = useState(employees[0].id)
-  const [through, setThrough] = useState('February 2026')
+  const [through, setThrough] = useState('July 2026')
   const [search, setSearch] = useState('')
 
   const employee = employees.find(e => e.id === empId)
@@ -111,10 +111,10 @@ export default function TaxDrilldown() {
         </div>
         <div className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
           <div><span className="text-navy-400">Employee: </span><span className="font-semibold text-navy-900">{employee.firstName} {employee.lastName} ({employee.id})</span></div>
-          <div><span className="text-navy-400">Period from: </span><span className="font-medium text-navy-800">March 2025</span></div>
+          <div><span className="text-navy-400">Period from: </span><span className="font-medium text-navy-800">March 2026</span></div>
           <div><span className="text-navy-400">Period to: </span><span className="font-medium text-navy-800">{through}</span></div>
           <div><span className="text-navy-400">Periods: </span><span className="font-medium text-navy-800">{periodsWorked}.00</span></div>
-          <div><span className="text-navy-400">Tax Year: </span><span className="font-medium text-navy-800">2025/2026</span></div>
+          <div><span className="text-navy-400">Tax Year: </span><span className="font-medium text-navy-800">2026/2027</span></div>
         </div>
       </div>
 

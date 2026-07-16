@@ -7,8 +7,8 @@ import { employees } from '../data/employees.js'
 import { formatNAD, calculatePayroll, validateEmployeeForPayroll } from '../utils/namibianTax.js'
 
 const PERIODS = [
-  'April 2025', 'March 2025', 'February 2025', 'January 2025',
-  'December 2024', 'November 2024',
+  'July 2026', 'June 2026', 'May 2026', 'April 2026',
+  'March 2026', 'February 2026',
 ]
 
 const STEPS = [
@@ -282,7 +282,7 @@ export default function PayrollRun() {
             <div className="bg-cream-100 border border-cream-200 rounded-xl p-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-navy-500">Pay Date</span>
-                <span className="font-medium text-navy-900">25 April 2025</span>
+                <span className="font-medium text-navy-900">25 {period}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-navy-500">Employees</span>
@@ -290,7 +290,7 @@ export default function PayrollRun() {
               </div>
               <div className="flex justify-between">
                 <span className="text-navy-500">PAYE Deadline</span>
-                <span className="font-medium text-red-600">20 April 2025</span>
+                <span className="font-medium text-red-600">20th of following month</span>
               </div>
             </div>
           </div>

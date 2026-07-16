@@ -5,7 +5,7 @@ import {
 } from 'lucide-react'
 import {
   EARNINGS, ALLOWANCES, DEDUCTIONS, EMPLOYER_CONTRIBUTIONS,
-  FRINGE_BENEFITS, PUBLIC_HOLIDAYS_2025,
+  FRINGE_BENEFITS, PUBLIC_HOLIDAYS_2026,
 } from '../data/payComponents.js'
 import { COMPANY_INFO } from '../data/employees.js'
 import {
@@ -370,8 +370,8 @@ export default function Configuration() {
       {tab === 'holidays' && (
         <div className="card overflow-hidden">
           <div className="px-5 py-3 border-b border-cream-200 bg-cream-50 flex items-center justify-between">
-            <div className="text-sm font-semibold text-navy-900">Namibian Public Holidays — 2025</div>
-            <span className="badge badge-navy">{PUBLIC_HOLIDAYS_2025.length} days</span>
+            <div className="text-sm font-semibold text-navy-900">Namibian Public Holidays — 2026</div>
+            <span className="badge badge-navy">{PUBLIC_HOLIDAYS_2026.length} days</span>
           </div>
           <table className="w-full">
             <thead>
@@ -383,7 +383,7 @@ export default function Configuration() {
               </tr>
             </thead>
             <tbody className="divide-y divide-cream-100">
-              {PUBLIC_HOLIDAYS_2025.map(h => {
+              {PUBLIC_HOLIDAYS_2026.map(h => {
                 const d = new Date(h.date + 'T00:00:00')
                 return (
                   <tr key={h.date + h.name} className="hover:bg-cream-50 transition-colors">

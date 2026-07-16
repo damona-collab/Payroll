@@ -366,14 +366,15 @@ export const employees = rawEmployees.map(emp => {
 export const departments = [...new Set(rawEmployees.map(e => e.department))].sort()
 
 /**
- * Tax-year periods (Mar–Feb, Namibian tax year) up to the current run.
+ * Tax-year periods (Mar–Feb, Namibian tax year) processed so far in the
+ * current 2026/2027 tax year, up to the current run (July 2026).
  * March is the first period of the tax year.
  */
 export const TAX_YEAR_PERIODS = [
-  'March 2025', 'April 2025', 'May 2025', 'June 2025', 'July 2025',
-  'August 2025', 'September 2025', 'October 2025', 'November 2025',
-  'December 2025', 'January 2026', 'February 2026',
+  'March 2026', 'April 2026', 'May 2026', 'June 2026', 'July 2026',
 ]
+
+export const CURRENT_PERIOD = 'July 2026'
 
 /**
  * Build a chronological list of monthly payslip results for an employee,
@@ -381,7 +382,7 @@ export const TAX_YEAR_PERIODS = [
  * mild variance so overtime/bonus months differ — enough to make the tax
  * drilldown and compare-payslips views meaningful.
  */
-export function generateMonthlyHistory(emp, throughPeriod = 'February 2026') {
+export function generateMonthlyHistory(emp, throughPeriod = 'July 2026') {
   const end = TAX_YEAR_PERIODS.indexOf(throughPeriod)
   const periods = TAX_YEAR_PERIODS.slice(0, end === -1 ? TAX_YEAR_PERIODS.length : end + 1)
   return periods.map((period, i) => {
